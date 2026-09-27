@@ -11,7 +11,7 @@ export class RateLimiter {
 
   check(key: string): { success: boolean; remaining: number; reset: number } {
     const now = Date.now();
-    
+
     // Clean up expired entries
     this.requests.forEach((v, k) => {
       if (now > v.resetTime) {
@@ -34,6 +34,19 @@ export class RateLimiter {
 
     return { success, remaining, reset: entry.resetTime };
   }
+}
+
+// Helper for API routes
+export function rateLimit(options: { interval: number; max: number }) {
+  const limiter = new RateLimiter(options.max, options.interval * 1000);
+
+  return {
+    check(request: Request): { success: boolean } {
+      const ip = request.headers.get('x-forwarded-for') || 'unknown';
+      const result = limiter.check(ip);
+      return { success: result.success };
+    },
+  };
 }
 
 const rateLimiter = new RateLimiter(5, 60000);

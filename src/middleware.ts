@@ -1,18 +1,26 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import rateLimiter from './lib/rate-limit';
+import { SESSION_COOKIE } from '@/lib/constants';
 
 export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    const ip = request.headers.get('x-forwarded-for') || 'anonymous';
-    
-    const { success } = rateLimiter.check(ip);
+  const { pathname } = request.nextUrl;
 
-    if (!success) {
-      return NextResponse.json(
-        { error: 'Demasiadas solicitudes. Intenta de nuevo mas tarde.' },
-        { status: 429 }
-      );
+  // Protect admin routes
+  if (pathname.startsWith('/admin')) {
+    const sessionId = request.cookies.get(SESSION_COOKIE)?.value;
+
+    if (!sessionId) {
+      const loginUrl = new URL('/login', request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Redirect from login to admin if already logged in
+  if (pathname === '/login') {
+    const sessionId = request.cookies.get(SESSION_COOKIE)?.value;
+    if (sessionId) {
+      const adminUrl = new URL('/admin', request.url);
+      return NextResponse.redirect(adminUrl);
     }
   }
 
@@ -20,5 +28,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/api/:path*'],
+  matcher: ['/admin/:path*', '/login'],
 };
