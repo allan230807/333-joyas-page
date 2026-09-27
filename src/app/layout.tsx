@@ -53,10 +53,9 @@ export default function RootLayout({
     address: {
       "@type": "PostalAddress",
       streetAddress: CONTACT_INFO.address,
-      addressCountry: "ES",
+      addressCountry: "VE",
     },
     telephone: CONTACT_INFO.phone,
-    email: CONTACT_INFO.email,
     url: SITE_URL,
     priceRange: "$$$$",
   };

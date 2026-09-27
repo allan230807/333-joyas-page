@@ -52,9 +52,9 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 <PhoneIcon size={20} />
                 <span>{CONTACT_INFO.phone}</span>
               </a>
-              <a href={`mailto:${CONTACT_INFO.email}`} className="flex items-center gap-3 text-muted hover:text-primary text-body transition-colors">
+              <a href={CONTACT_INFO.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted hover:text-primary text-body transition-colors">
                 <MailIcon size={20} />
-                <span>{CONTACT_INFO.email}</span>
+                <span>{CONTACT_INFO.instagram_handle}</span>
               </a>
             </div>
           </div>

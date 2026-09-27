@@ -67,9 +67,9 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href={`mailto:${CONTACT_INFO.email}`} className="flex items-center gap-3 text-white/70 hover:text-accent transition-colors">
+                <a href={CONTACT_INFO.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white/70 hover:text-accent transition-colors">
                   <MailIcon size={20} className="shrink-0" />
-                  <span>{CONTACT_INFO.email}</span>
+                  <span>{CONTACT_INFO.instagram_handle}</span>
                 </a>
               </li>
               <li className="flex items-start gap-3 text-white/70">
