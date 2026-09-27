@@ -1,29 +1,49 @@
-import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { SESSION_COOKIE } from './constants';
-import { getUserByEmail, createSession, getSession, deleteSession, type User, type Session } from './db';
+import crypto from 'crypto';
 
-export interface AuthUser {
+// Admin credentials (hashed comparison)
+const ADMIN_EMAIL = 'ararciahurtado@gmail.com';
+const ADMIN_PASSWORD = 'Akira100*';
+const SECRET_KEY = process.env.AUTH_SECRET || '333-joyas-secret-key-change-in-production';
+
+function hashPassword(password: string): string {
+  return crypto.createHash('sha256').update(password + SECRET_KEY).digest('hex');
+}
+
+function sign(data: string): string {
+  return crypto.createHmac('sha256', SECRET_KEY).update(data).digest('hex');
+}
+
+function verify(data: string, signature: string): boolean {
+  const expected = sign(data);
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+
+interface AdminUser {
   id: number;
   email: string;
   role: string;
 }
 
-export async function login(email: string, password: string): Promise<{ success: boolean; user?: AuthUser; error?: string }> {
-  const user = getUserByEmail(email);
+export async function login(email: string, password: string): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
+  const passwordHash = hashPassword(password);
 
-  if (!user) {
+  if (email !== ADMIN_EMAIL || passwordHash !== hashPassword(ADMIN_PASSWORD)) {
     return { success: false, error: 'Credenciales inválidas' };
   }
 
-  const valid = await bcrypt.compare(password, user.password_hash);
-  if (!valid) {
-    return { success: false, error: 'Credenciales inválidas' };
-  }
+  // Create session token
+  const sessionData = JSON.stringify({
+    id: 1,
+    email: ADMIN_EMAIL,
+    role: 'admin',
+    exp: Date.now() + 24 * 60 * 60 * 1000,
+  });
+  const signature = sign(sessionData);
+  const token = `${Buffer.from(sessionData).toString('base64')}.${signature}`;
 
-  const session = createSession(user.id);
-
-  cookies().set(SESSION_COOKIE, session.id, {
+  cookies().set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
@@ -33,43 +53,41 @@ export async function login(email: string, password: string): Promise<{ success:
 
   return {
     success: true,
-    user: { id: user.id, email: user.email, role: user.role },
+    user: { id: 1, email: ADMIN_EMAIL, role: 'admin' },
   };
 }
 
 export async function logout(): Promise<void> {
-  const sessionId = cookies().get(SESSION_COOKIE)?.value;
-  if (sessionId) {
-    deleteSession(sessionId);
-  }
   cookies().delete(SESSION_COOKIE);
 }
 
-export async function getSessionUser(): Promise<AuthUser | null> {
-  const sessionId = cookies().get(SESSION_COOKIE)?.value;
-  if (!sessionId) return null;
+export async function getCurrentUser(): Promise<AdminUser | null> {
+  const token = cookies().get(SESSION_COOKIE)?.value;
+  if (!token) return null;
 
-  const session = getSession(sessionId);
-  if (!session) return null;
+  try {
+    const [dataBase64, signature] = token.split('.');
+    if (!dataBase64 || !signature) return null;
 
-  if (new Date(session.expires_at) < new Date()) {
-    deleteSession(sessionId);
-    cookies().delete(SESSION_COOKIE);
+    // Verify signature
+    const sessionData = Buffer.from(dataBase64, 'base64').toString();
+    if (!verify(sessionData, signature)) return null;
+
+    const session = JSON.parse(sessionData);
+
+    // Check expiration
+    if (session.exp < Date.now()) {
+      cookies().delete(SESSION_COOKIE);
+      return null;
+    }
+
+    return { id: session.id, email: session.email, role: session.role };
+  } catch {
     return null;
   }
-
-  const { getUserById } = await import('./db');
-  const user = getUserById(session.user_id);
-  if (!user) return null;
-
-  return { id: user.id, email: user.email, role: user.role };
 }
 
-export async function getCurrentUser(): Promise<AuthUser | null> {
-  return getSessionUser();
-}
-
-export async function requireAdmin(): Promise<AuthUser | null> {
+export async function requireAdmin(): Promise<AdminUser | null> {
   const user = await getCurrentUser();
   if (!user || user.role !== 'admin') return null;
   return user;
