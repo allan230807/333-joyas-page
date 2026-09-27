@@ -129,6 +129,4 @@ npm run build
 
 ---
 
-<p align="center">
-  Hecho con 💛, mucho ☕ y horas frente al editor.
-</p>
+
