@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
+type Tab = 'productos' | 'nosotros';
+
 interface Product {
   id: number;
   name: string;
@@ -30,6 +32,7 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<Tab>('productos');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -253,23 +256,60 @@ export default function AdminPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 shadow-sm">
-            <p className="text-muted text-sm">Total Productos</p>
-            <p className="text-3xl font-heading text-primary">{products.length}</p>
-          </div>
-          <div className="bg-white p-6 shadow-sm">
-            <p className="text-muted text-sm">Destacados</p>
-            <p className="text-3xl font-heading text-primary">
-              {products.filter((p) => p.featured === 1).length}
-            </p>
-          </div>
-          <div className="bg-white p-6 shadow-sm">
-            <p className="text-muted text-sm">Categorías</p>
-            <p className="text-3xl font-heading text-primary">{categories.length}</p>
-          </div>
+        {/* Tabs */}
+        <div className="flex gap-4 mb-8 border-b border-border">
+          <button
+            onClick={() => setActiveTab('productos')}
+            className={`pb-4 px-2 text-sm uppercase tracking-widest transition-colors ${
+              activeTab === 'productos'
+                ? 'text-accent border-b-2 border-accent'
+                : 'text-muted hover:text-primary'
+            }`}
+          >
+            Productos
+          </button>
+          <button
+            onClick={() => setActiveTab('nosotros')}
+            className={`pb-4 px-2 text-sm uppercase tracking-widest transition-colors ${
+              activeTab === 'nosotros'
+                ? 'text-accent border-b-2 border-accent'
+                : 'text-muted hover:text-primary'
+            }`}
+          >
+            Nosotros
+          </button>
         </div>
+
+        {activeTab === 'productos' && (
+          <>
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white p-6 shadow-sm">
+                <p className="text-muted text-sm">Total Productos</p>
+                <p className="text-3xl font-heading text-primary">{products.length}</p>
+              </div>
+              <div className="bg-white p-6 shadow-sm">
+                <p className="text-muted text-sm">Destacados</p>
+                <p className="text-3xl font-heading text-primary">
+                  {products.filter((p) => p.featured === 1).length}
+                </p>
+              </div>
+              <div className="bg-white p-6 shadow-sm">
+                <p className="text-muted text-sm">Categorías</p>
+                <p className="text-3xl font-heading text-primary">{categories.length}</p>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-heading text-2xl text-primary">Productos</h2>
+              <button
+                onClick={openNewProduct}
+                className="bg-accent text-white px-6 py-2 text-sm uppercase tracking-widest hover:bg-accent/90 transition-colors"
+              >
+                + Nuevo Producto
+              </button>
+            </div>
 
         {/* Actions */}
         <div className="flex items-center justify-between mb-6">
@@ -345,6 +385,23 @@ export default function AdminPage() {
             </tbody>
           </table>
         </div>
+          </>
+        )}
+
+        {activeTab === 'nosotros' && (
+          <div className="bg-white p-8 shadow-sm text-center">
+            <h2 className="font-heading text-2xl text-primary mb-4">Editar Sección "Nosotros"</h2>
+            <p className="text-muted mb-6">
+              Edita el título, descripción, características y sección de inversión de la página principal.
+            </p>
+            <Link
+              href="/admin/nosotros"
+              className="inline-block bg-accent text-white px-8 py-3 text-sm uppercase tracking-widest hover:bg-accent/90 transition-colors"
+            >
+              Ir al Editor de Nosotros
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Product Form Modal */}

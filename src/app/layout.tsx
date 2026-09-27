@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import StickyCTA from "@/components/layout/StickyCTA";
+import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/cart/CartDrawer";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, CONTACT_INFO } from "@/lib/constants";
 import JsonLd from "@/components/seo/JsonLd";
 
@@ -72,10 +74,13 @@ export default function RootLayout({
       </head>
       <body className="font-body bg-surface text-primary antialiased flex flex-col min-h-screen">
         <JsonLd data={localBusinessSchema} />
-        <Header />
-        <main className="flex-grow pt-16 md:pt-20">{children}</main>
-        <Footer />
-        <StickyCTA />
+        <CartProvider>
+          <Header />
+          <main className="flex-grow pt-16 md:pt-20">{children}</main>
+          <Footer />
+          <StickyCTA />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

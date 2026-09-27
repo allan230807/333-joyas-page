@@ -6,6 +6,7 @@ import { MenuIcon, SearchIcon } from '@/components/icons';
 import { NAV_ITEMS } from '@/lib/constants';
 import Container from '@/components/ui/Container';
 import MobileNav from './MobileNav';
+import CartButton from '@/components/cart/CartButton';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -45,6 +46,7 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center gap-4">
+              <CartButton />
               <button
                 type="button"
                 className="hidden md:block text-muted hover:text-primary transition-colors"
@@ -52,7 +54,7 @@ export default function Header() {
               >
                 <SearchIcon size={20} />
               </button>
-              
+
               <button
                 type="button"
                 className="md:hidden text-primary"

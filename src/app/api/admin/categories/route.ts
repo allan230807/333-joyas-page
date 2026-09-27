@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getCategories } from '@/lib/db';
 import { requireAdmin } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -10,8 +10,6 @@ export async function GET() {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
   }
 
-  const db = getDb();
-  const categories = db.prepare('SELECT * FROM categories ORDER BY name').all();
-
+  const categories = getCategories();
   return NextResponse.json({ categories });
 }
