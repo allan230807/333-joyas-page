@@ -12,7 +12,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const imageUrl = product.images[0]?.url || '/placeholder.jpg'
+  const imageUrl = product.images[0]?.url || ''
   const imageAlt = product.images[0]?.alt || product.name
   const [isHovered, setIsHovered] = useState(false)
 
@@ -30,15 +30,15 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/catalogo/${product.slug}`} className="group block">
       <div
-        className="relative aspect-[3/4] w-full overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100"
+        className="relative aspect-[3/4] w-full overflow-hidden bg-gradient-to-br from-gray-900 to-gray-950"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Weave pattern background */}
+        {/* Weave pattern background - always visible, more prominent on hover */}
         <motion.div
-          className="absolute inset-0"
+          className="absolute inset-0 z-0"
           initial={false}
-          animate={isHovered ? { opacity: 0.4 } : { opacity: 0 }}
+          animate={isHovered ? { opacity: 0.6, scale: 1.05 } : { opacity: 0.15, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
           <WeavePattern type={weaveType as never} />
@@ -46,67 +46,82 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Animated lines overlay */}
         <motion.div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none z-10"
           initial={false}
-          animate={isHovered ? { opacity: 0.3 } : { opacity: 0 }}
+          animate={isHovered ? { opacity: 0.4 } : { opacity: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {[...Array(8)].map((_, i) => (
+          {[...Array(12)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute h-px bg-accent"
+              className="absolute h-px bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"
               style={{
-                top: `${(i + 1) * 12}%`,
-                left: 0,
-                right: 0,
+                top: `${(i + 1) * 8}%`,
+                left: '10%',
+                right: '10%',
               }}
               initial={{ scaleX: 0, opacity: 0 }}
               animate={isHovered ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
+              transition={{ duration: 0.4, delay: i * 0.03 }}
             />
           ))}
         </motion.div>
 
         {/* Product image */}
-        <motion.div
-          className="relative z-10 h-full w-full"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
-        >
-          <Image
-            src={imageUrl}
-            alt={imageAlt}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </motion.div>
+        {imageUrl ? (
+          <motion.div
+            className="relative z-20 h-full w-full"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+          >
+            <Image
+              src={imageUrl}
+              alt={imageAlt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </motion.div>
+        ) : (
+          <div className="absolute inset-0 z-20 flex items-center justify-center">
+            <div className="text-center">
+              <motion.div
+                className="w-16 h-16 mx-auto mb-3 rounded-full border-2 border-[#d4af37]/30 flex items-center justify-center"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <span className="text-[#d4af37] text-2xl">✦</span>
+              </motion.div>
+              <p className="text-white/40 text-sm">Sin imagen</p>
+            </div>
+          </div>
+        )}
 
         {/* Category badge */}
-        <div className="absolute top-4 left-4 z-20">
-          <span className="bg-primary/80 backdrop-blur-sm text-white text-xs px-3 py-1 uppercase tracking-wider">
+        <div className="absolute top-4 left-4 z-30">
+          <span className="bg-[#0a0a14]/80 backdrop-blur-sm text-white text-xs px-3 py-1 uppercase tracking-wider">
             {product.category?.name || 'Oro'}
           </span>
         </div>
 
         {/* Weave type indicator */}
         <motion.div
-          className="absolute bottom-4 left-4 z-20"
+          className="absolute bottom-4 left-4 z-30"
           initial={false}
           animate={isHovered ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.3 }}
         >
-          <span className="bg-accent/90 backdrop-blur-sm text-primary text-xs px-3 py-1 font-medium">
+          <span className="bg-[#d4af37]/90 backdrop-blur-sm text-[#0a0a14] text-xs px-3 py-1 font-medium">
             {weaveType}
           </span>
         </motion.div>
       </div>
 
       <div className="mt-4">
-        <p className="text-accent text-xs uppercase tracking-widest">
+        <p className="text-[#d4af37] text-xs uppercase tracking-widest">
           {product.category?.name || 'Oro'}
         </p>
-        <h3 className="font-heading text-lg md:text-xl mt-1 text-primary group-hover:text-accent transition-colors duration-300">
+        <h3 className="font-heading text-lg md:text-xl mt-1 text-[#0a0a14] group-hover:text-[#d4af37] transition-colors duration-300">
           {product.name}
         </h3>
         <div className="flex items-center justify-between mt-2">
