@@ -7,7 +7,7 @@ import { Accordion } from '@/components/ui/Accordion'
 
 export default function FAQ() {
   return (
-    <section className="py-24 bg-surface">
+    <section className="py-24 bg-[#0f1528]">
       <Container>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -15,7 +15,7 @@ export default function FAQ() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-h2 text-center text-primary font-heading">
+          <h2 className="text-h2 text-center text-white font-heading">
             Preguntas frecuentes
           </h2>
           <p className="text-muted text-body text-center mt-4 mb-12 font-body max-w-2xl mx-auto">

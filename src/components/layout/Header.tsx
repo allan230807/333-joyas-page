@@ -23,13 +23,13 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white/95 backdrop-blur-sm border-b border-border ${
-          isScrolled ? 'shadow-sm' : ''
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-[#0a0a14]/90 backdrop-blur-md border-b border-white/10 ${
+          isScrolled ? 'shadow-lg shadow-black/20' : ''
         }`}
       >
         <Container>
           <div className="flex items-center justify-between h-16 md:h-20">
-            <Link href="/" className="font-heading text-xl md:text-2xl text-primary">
+            <Link href="/" className="font-heading text-xl md:text-2xl text-white">
               333 Joyas
             </Link>
 
@@ -38,7 +38,7 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-small uppercase tracking-widest text-muted hover:text-primary transition-colors"
+                  className="text-small uppercase tracking-widest text-white/60 hover:text-[#d4af37] transition-colors"
                 >
                   {item.label}
                 </Link>
@@ -49,7 +49,7 @@ export default function Header() {
               <CartButton />
               <button
                 type="button"
-                className="hidden md:block text-muted hover:text-primary transition-colors"
+                className="hidden md:block text-white/60 hover:text-[#d4af37] transition-colors"
                 aria-label="Buscar"
               >
                 <SearchIcon size={20} />
@@ -57,7 +57,7 @@ export default function Header() {
 
               <button
                 type="button"
-                className="md:hidden text-primary"
+                className="md:hidden text-white"
                 onClick={() => setIsMobileNavOpen(true)}
                 aria-label="Menú"
               >

@@ -19,7 +19,7 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed inset-0 z-50 bg-white flex flex-col"
+          className="fixed inset-0 z-50 bg-[#0a0a14]/95 backdrop-blur-md flex flex-col"
         >
           <div className="flex justify-end p-6">
             <button

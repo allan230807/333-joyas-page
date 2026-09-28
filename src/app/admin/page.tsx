@@ -309,19 +309,19 @@ export default function AdminPage() {
           <>
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white p-6 shadow-sm">
-                <p className="text-muted text-sm">Total Productos</p>
-                <p className="text-3xl font-heading text-primary">{products.length}</p>
+              <div className="bg-white/5 border border-white/10 p-6">
+                <p className="text-white/50 text-sm">Total Productos</p>
+                <p className="text-3xl font-heading text-white">{products.length}</p>
               </div>
-              <div className="bg-white p-6 shadow-sm">
-                <p className="text-muted text-sm">Destacados</p>
-                <p className="text-3xl font-heading text-primary">
+              <div className="bg-white/5 border border-white/10 p-6">
+                <p className="text-white/50 text-sm">Destacados</p>
+                <p className="text-3xl font-heading text-white">
                   {products.filter((p) => p.featured === 1).length}
                 </p>
               </div>
-              <div className="bg-white p-6 shadow-sm">
-                <p className="text-muted text-sm">Categorías</p>
-                <p className="text-3xl font-heading text-primary">{categories.length}</p>
+              <div className="bg-white/5 border border-white/10 p-6">
+                <p className="text-white/50 text-sm">Categorías</p>
+                <p className="text-3xl font-heading text-white">{categories.length}</p>
               </div>
             </div>
 
@@ -337,7 +337,7 @@ export default function AdminPage() {
             </div>
 
             {/* Products Table */}
-            <div className="bg-white shadow-sm overflow-hidden">
+            <div className="bg-white/5 border border-white/10 overflow-hidden">
               {products.length === 0 ? (
                 <div className="p-12 text-center">
                   <p className="text-muted">No hay productos todavía.</p>
@@ -356,10 +356,10 @@ export default function AdminPage() {
                   </thead>
                   <tbody>
                     {products.map((product) => (
-                      <tr key={product.id} className="border-b border-border hover:bg-gray-50">
+                      <tr key={product.id} className="border-b border-white/5 hover:bg-white/5">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gray-100 overflow-hidden">
+                            <div className="w-12 h-12 bg-white/10 overflow-hidden">
                               {(() => {
                                 try {
                                   const imgs = JSON.parse(product.images || '[]');
@@ -374,18 +374,18 @@ export default function AdminPage() {
                               })()}
                             </div>
                             <div>
-                              <p className="font-medium text-primary">{product.name}</p>
-                              <p className="text-sm text-muted">{product.sku}</p>
+                              <p className="font-medium text-white">{product.name}</p>
+                              <p className="text-sm text-white/50">{product.sku}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-muted">{product.category_name || '-'}</td>
-                        <td className="px-6 py-4 text-sm text-primary font-medium">
+                        <td className="px-6 py-4 text-sm text-white/60">{product.category_name || '-'}</td>
+                        <td className="px-6 py-4 text-sm text-white font-medium">
                           ${product.price.toLocaleString()} {product.currency}
                         </td>
                         <td className="px-6 py-4">
                           <span className={`inline-block px-2 py-1 text-xs rounded ${
-                            product.in_stock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            product.in_stock ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
                           }`}>
                             {product.in_stock ? 'En stock' : 'Agotado'}
                           </span>
@@ -399,7 +399,7 @@ export default function AdminPage() {
                           </button>
                           <button
                             onClick={() => handleDelete(product.id)}
-                            className="text-red-600 hover:text-red-800 text-sm"
+                            className="text-red-400 hover:text-red-300 text-sm"
                           >
                             Eliminar
                           </button>
@@ -443,37 +443,37 @@ export default function AdminPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8"
+              className="bg-[#0f1528] border border-white/10 w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="font-heading text-2xl text-primary mb-6">
+              <h3 className="font-heading text-2xl text-white mb-6">
                 {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
               </h3>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">Nombre</label>
+                    <label className="block text-sm font-medium text-white mb-1">Nombre</label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                      className="w-full px-3 py-2 border border-white/10 bg-white/5 text-white focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">Slug</label>
+                    <label className="block text-sm font-medium text-white mb-1">Slug</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
                         value={formData.slug}
                         onChange={(e) => setFormData((p) => ({ ...p, slug: e.target.value }))}
-                        className="flex-1 px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                        className="flex-1 px-3 py-2 border border-white/10 bg-white/5 text-white focus:outline-none focus:border-[#d4af37]"
                       />
                       <button
                         type="button"
                         onClick={generateSlug}
-                        className="px-3 py-2 bg-gray-100 text-sm hover:bg-gray-200"
+                        className="px-3 py-2 bg-white/10 text-sm text-white hover:bg-white/20"
                       >
                         Generar
                       </button>
@@ -492,42 +492,42 @@ export default function AdminPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-1">Descripción</label>
+                  <label className="block text-sm font-medium text-white mb-1">Descripción</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
                     rows={3}
-                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                    className="w-full px-3 py-2 border border-white/10 bg-white/5 text-white focus:outline-none focus:border-[#d4af37]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">Precio (USD)</label>
+                    <label className="block text-sm font-medium text-white mb-1">Precio (USD)</label>
                     <input
                       type="number"
                       value={formData.price}
                       onChange={(e) => setFormData((p) => ({ ...p, price: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                      className="w-full px-3 py-2 border border-white/10 bg-white/5 text-white focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">SKU</label>
+                    <label className="block text-sm font-medium text-white mb-1">SKU</label>
                     <input
                       type="text"
                       value={formData.sku}
                       onChange={(e) => setFormData((p) => ({ ...p, sku: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                      className="w-full px-3 py-2 border border-white/10 bg-white/5 text-white focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-1">Categoría</label>
+                  <label className="block text-sm font-medium text-white mb-1">Categoría</label>
                   <select
                     value={formData.category_id}
                     onChange={(e) => setFormData((p) => ({ ...p, category_id: e.target.value }))}
-                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                    className="w-full px-3 py-2 border border-white/10 bg-[#0f1528] text-white focus:outline-none focus:border-[#d4af37]"
                   >
                     <option value="">Seleccionar categoría...</option>
                     {categories.map((cat) => (
@@ -537,41 +537,41 @@ export default function AdminPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-1">Tipo de tejido / Material</label>
+                  <label className="block text-sm font-medium text-white mb-1">Tipo de tejido / Material</label>
                   <input
                     type="text"
                     value={formData.materials}
                     onChange={(e) => setFormData((p) => ({ ...p, materials: e.target.value }))}
                     placeholder="Oro 18k, Cadena venezolana, etc."
-                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                    className="w-full px-3 py-2 border border-white/10 bg-white/5 text-white focus:outline-none focus:border-[#d4af37]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">Peso (gramos)</label>
+                    <label className="block text-sm font-medium text-white mb-1">Peso (gramos)</label>
                     <input
                       type="number"
                       value={formData.weight_grams}
                       onChange={(e) => setFormData((p) => ({ ...p, weight_grams: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                      className="w-full px-3 py-2 border border-white/10 bg-white/5 text-white focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">Dimensiones</label>
+                    <label className="block text-sm font-medium text-white mb-1">Dimensiones</label>
                     <input
                       type="text"
                       value={formData.dimensions}
                       onChange={(e) => setFormData((p) => ({ ...p, dimensions: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                      className="w-full px-3 py-2 border border-white/10 bg-white/5 text-white focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
 
                 {/* Image Upload */}
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-2">Imágenes</label>
-                  <div className="border-2 border-dashed border-border p-4 text-center">
+                  <label className="block text-sm font-medium text-white mb-2">Imágenes</label>
+                  <div className="border-2 border-dashed border-white/20 p-4 text-center">
                     <input
                       type="file"
                       accept="image/*"

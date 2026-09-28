@@ -16,7 +16,7 @@ export function Input({ label, error, textarea, className = '', ...props }: Inpu
         {props.required && <span className="text-accent ml-1">*</span>}
       </label>
       <Component
-        className="w-full border border-border bg-white px-4 py-3 text-body text-primary placeholder:text-muted/50 focus:outline-none focus:border-accent transition-colors rounded-none"
+        className="w-full border border-white/10 bg-white/5 px-4 py-3 text-body text-white placeholder:text-white/30 focus:outline-none focus:border-[#d4af37] transition-colors rounded-none"
         {...(props as any)}
       />
       {error && (

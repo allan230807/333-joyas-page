@@ -10,7 +10,7 @@ export default function CartButton() {
   return (
     <button
       onClick={openCart}
-      className="relative p-2 text-muted hover:text-primary transition-colors"
+      className="relative p-2 text-white/60 hover:text-[#d4af37] transition-colors"
       aria-label="Abrir carrito"
     >
       <ShoppingBagIcon size={24} />

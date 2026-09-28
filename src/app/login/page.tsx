@@ -60,15 +60,15 @@ export default function LoginPage() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="bg-white p-8 shadow-2xl">
+        <div className="bg-[#0f1528] border border-white/10 p-8 shadow-2xl">
           <div className="text-center mb-8">
-            <h1 className="font-heading text-3xl text-[#0a0a14] mb-2">333 Joyas</h1>
+            <h1 className="font-heading text-3xl text-white mb-2">333 Joyas</h1>
             <p className="text-muted text-sm">Panel de Administración</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[#0a0a14] mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
                 Correo electrónico
               </label>
               <input
@@ -83,7 +83,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-[#0a0a14] mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
                 Contraseña
               </label>
               <input
