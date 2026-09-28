@@ -13,19 +13,27 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const { data: products } = await supabase
-    .from("products")
-    .select(`
-      *,
-      category:categories(*),
-      images:product_images(*)
-    `);
+  let randomProducts: Product[] = [];
 
-  // Shuffle and pick 3 products randomly
-  const randomProducts = products
-    ? (products as Product[]).sort(() => 0.5 - Math.random()).slice(0, 3)
-    : [];
+  try {
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      const supabase = await createClient();
+      const { data: products } = await supabase
+        .from("products")
+        .select(`
+          *,
+          category:categories(*),
+          images:product_images(*)
+        `);
+
+      // Shuffle and pick 3 products randomly
+      randomProducts = products
+        ? (products as Product[]).sort(() => 0.5 - Math.random()).slice(0, 3)
+        : [];
+    }
+  } catch {
+    // Supabase not configured yet — show empty state
+  }
 
   return (
     <>
