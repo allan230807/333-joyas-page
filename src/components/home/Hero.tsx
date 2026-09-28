@@ -1,35 +1,54 @@
 'use client'
 
 import Link from 'next/link'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useRef } from 'react'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { useRef, useState, useEffect } from 'react'
 
-const goldParticles = Array.from({ length: 30 }, (_, i) => ({
-  id: i,
-  x: Math.random() * 100,
-  y: Math.random() * 100,
-  size: Math.random() * 6 + 2,
-  duration: Math.random() * 4 + 2,
-  delay: Math.random() * 3,
-}))
+function GoldParticle({ delay, x, y }: { delay: number; x: number; y: number }) {
+  return (
+    <motion.div
+      className="absolute w-1 h-1 rounded-full bg-accent"
+      style={{ left: `${x}%`, top: `${y}%` }}
+      animate={{
+        y: [0, -30, 0],
+        opacity: [0, 0.8, 0],
+        scale: [0, 1.5, 0],
+      }}
+      transition={{
+        duration: 3 + Math.random() * 2,
+        delay,
+        repeat: Infinity,
+        ease: 'easeInOut',
+      }}
+    />
+  )
+}
 
-const shimmerText = {
-  background: 'linear-gradient(90deg, #c9a96e 0%, #f5e6c8 50%, #c9a96e 100%)',
-  backgroundSize: '200% auto',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
-  backgroundClip: 'text',
+function FloatingRing({ delay, size, x, y }: { delay: number; size: number; x: number; y: number }) {
+  return (
+    <motion.div
+      className="absolute rounded-full border border-accent/10"
+      style={{ width: size, height: size, left: `${x}%`, top: `${y}%` }}
+      animate={{ rotate: 360 }}
+      transition={{ duration: 20 + delay * 5, repeat: Infinity, ease: 'linear' }}
+    />
+  )
 }
 
 export default function Hero() {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  if (!mounted) return null
 
   return (
     <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated background gradient */}
+      {/* Animated gradient background */}
       <motion.div
         className="absolute inset-0"
         animate={{
@@ -44,45 +63,14 @@ export default function Hero() {
       />
 
       {/* Gold particles */}
-      {goldParticles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full"
-          style={{
-            width: p.size,
-            height: p.size,
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            background: `radial-gradient(circle, #c9a96e 0%, transparent 70%)`,
-            boxShadow: '0 0 10px #c9a96e',
-          }}
-          animate={{
-            y: [0, -40, 0],
-            opacity: [0.1, 0.6, 0.1],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
+      {[...Array(15)].map((_, i) => (
+        <GoldParticle key={i} delay={i * 0.3} x={Math.random() * 100} y={Math.random() * 100} />
       ))}
 
-      {/* Gold ring decorations */}
-      <motion.div
-        className="absolute w-96 h-96 rounded-full border border-accent/10"
-        style={{ top: '10%', left: '-5%' }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-      />
-      <motion.div
-        className="absolute w-64 h-64 rounded-full border border-accent/10"
-        style={{ bottom: '10%', right: '-3%' }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-      />
+      {/* Floating rings */}
+      <FloatingRing delay={0} size={300} x={-5} y={10} />
+      <FloatingRing delay={1} size={200} x={85} y={60} />
+      <FloatingRing delay={2} size={150} x={70} y={-5} />
 
       {/* Content */}
       <motion.div className="relative z-10 max-w-6xl mx-auto px-6 py-20 text-center" style={{ y, opacity }}>
@@ -107,7 +95,11 @@ export default function Hero() {
           transition={{ duration: 1, delay: 0.4 }}
         >
           Tu patrimonio en{' '}
-          <motion.span className="inline-block" style={shimmerText} animate={{ backgroundPosition: ['0% center', '200% center'] }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}>
+          <motion.span
+            className="inline-block bg-gradient-to-r from-accent via-[#f5e6c8] to-accent bg-clip-text text-transparent bg-[length:200%_auto]"
+            animate={{ backgroundPosition: ['0% center', '200% center'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+          >
             oro
           </motion.span>
         </motion.h1>
@@ -163,7 +155,12 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 1.4 }}
         >
           {['Oro 18k certificado', 'Delivery personal', 'Precios de inversión', 'Garantía de pureza'].map((badge) => (
-            <motion.span key={badge} className="flex items-center gap-2" whileHover={{ scale: 1.1, color: 'rgba(201, 169, 110, 0.8)' }} transition={{ duration: 0.2 }}>
+            <motion.span
+              key={badge}
+              className="flex items-center gap-2 cursor-default"
+              whileHover={{ scale: 1.1, color: 'rgba(201, 169, 110, 0.8)' }}
+              transition={{ duration: 0.2 }}
+            >
               <span className="w-2 h-2 bg-accent rounded-full" />
               {badge}
             </motion.span>
@@ -172,9 +169,17 @@ export default function Hero() {
       </motion.div>
 
       {/* Scroll indicator */}
-      <motion.div className="absolute bottom-10 left-1/2 -translate-x-1/2" animate={{ y: [0, 12, 0] }} transition={{ duration: 2, repeat: Infinity }}>
+      <motion.div
+        className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        animate={{ y: [0, 12, 0] }}
+        transition={{ duration: 2, repeat: Infinity }}
+      >
         <div className="w-8 h-14 border-2 border-white/20 rounded-full flex justify-center pt-3">
-          <motion.div className="w-1.5 h-3 bg-accent rounded-full" animate={{ y: [0, 16, 0], opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} />
+          <motion.div
+            className="w-1.5 h-3 bg-accent rounded-full"
+            animate={{ y: [0, 16, 0], opacity: [1, 0.3, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
         </div>
       </motion.div>
     </section>

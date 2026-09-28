@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Product } from '@/types'
 import { useState } from 'react'
+import WeavePattern from './weavePatterns'
 
 interface ProductCardProps {
   product: Product
@@ -24,7 +25,7 @@ export function ProductCard({ product }: ProductCardProps) {
     ? JSON.parse(product.materials)
     : product.materials
 
-  const weaveType = Array.isArray(materials) ? materials[0] : 'Oro'
+  const weaveType = Array.isArray(materials) && materials.length > 0 ? materials[0] : 'san-francisco'
 
   return (
     <Link href={`/catalogo/${product.slug}`} className="group block">
@@ -33,30 +34,15 @@ export function ProductCard({ product }: ProductCardProps) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Weave animation background */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id={`weave-${product.id}`} patternUnits="userSpaceOnUse" width="20" height="20">
-                <path
-                  d="M0 10 Q5 5 10 10 T20 10"
-                  fill="none"
-                  stroke="#c9a96e"
-                  strokeWidth="0.5"
-                  className="animate-weave"
-                />
-                <path
-                  d="M0 10 Q5 15 10 10 T20 10"
-                  fill="none"
-                  stroke="#c9a96e"
-                  strokeWidth="0.5"
-                  className="animate-weave-reverse"
-                />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill={`url(#weave-${product.id})`} />
-          </svg>
-        </div>
+        {/* Weave pattern background */}
+        <motion.div
+          className="absolute inset-0"
+          initial={false}
+          animate={isHovered ? { opacity: 0.4 } : { opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <WeavePattern type={weaveType as never} />
+        </motion.div>
 
         {/* Animated lines overlay */}
         <motion.div

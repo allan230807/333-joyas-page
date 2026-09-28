@@ -1,20 +1,10 @@
 import { NextResponse } from 'next/server';
 import { login } from '@/lib/auth';
-import { rateLimit } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
-  const limiter = rateLimit({ interval: 60, max: 5 });
-  const check = limiter.check(request);
-
-  if (!check.success) {
-    return NextResponse.json(
-      { error: 'Demasiados intentos. Intenta de nuevo en un minuto.' },
-      { status: 429 }
-    );
-  }
-
   try {
     const body = await request.json();
     const { email, password } = body;
@@ -39,7 +29,8 @@ export async function POST(request: Request) {
       success: true,
       user: result.user,
     });
-  } catch {
+  } catch (error) {
+    console.error('Login error:', error);
     return NextResponse.json(
       { error: 'Error del servidor' },
       { status: 500 }

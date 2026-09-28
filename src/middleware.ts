@@ -17,20 +17,9 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect from login to admin if already logged in
-  if (pathname === '/login') {
-    const token = request.cookies.get(SESSION_COOKIE)?.value;
-    const session = verifySessionToken(token);
-
-    if (session) {
-      const adminUrl = new URL('/admin', request.url);
-      return NextResponse.redirect(adminUrl);
-    }
-  }
-
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/login'],
+  matcher: ['/admin/:path*'],
 };
