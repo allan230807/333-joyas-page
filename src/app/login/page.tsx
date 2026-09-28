@@ -1,11 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-
-const ADMIN_EMAIL = 'ararciahurtado@gmail.com';
-const ADMIN_PASSWORD = 'Akira100*';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,26 +10,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [checking, setChecking] = useState(true);
-
-  // Check if already logged in via API
-  useEffect(() => {
-    fetch('/api/auth/session')
-      .then((res) => {
-        if (!res.ok) throw new Error('No session');
-        return res.json();
-      })
-      .then((data) => {
-        if (data.user) {
-          router.replace('/admin');
-          return;
-        }
-        setChecking(false);
-      })
-      .catch(() => {
-        setChecking(false);
-      });
-  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +26,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (data.success) {
-        router.replace('/admin');
+        router.push('/admin');
       } else {
         setError(data.error || 'Error al iniciar sesión');
       }
@@ -60,18 +37,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
-  if (checking) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a14]">
-        <motion.div
-          className="w-12 h-12 border-2 border-[#d4af37] border-t-transparent rounded-full"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0a14] px-4 relative overflow-hidden">

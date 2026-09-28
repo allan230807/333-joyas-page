@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(_request: NextRequest) {
-  // No middleware - auth is handled client-side in login page
+  // No redirects - all auth is handled client-side
   return NextResponse.next();
 }
 

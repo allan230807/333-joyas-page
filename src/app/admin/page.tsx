@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
-type Tab = 'productos' | 'nosotros';
-
 interface Product {
   id: number;
   name: string;
@@ -25,6 +23,8 @@ interface Category {
   name: string;
   slug: string;
 }
+
+type Tab = 'productos' | 'nosotros';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -66,29 +66,37 @@ export default function AdminPage() {
       const data = await res.json();
 
       if (!data.user) {
-        router.push('/login');
+        setLoading(false);
         return;
       }
 
       setUser(data.user);
       await Promise.all([fetchProducts(), fetchCategories()]);
     } catch {
-      router.push('/login');
+      // No session, just show empty state
     } finally {
       setLoading(false);
     }
   };
 
   const fetchProducts = async () => {
-    const res = await fetch('/api/admin/products');
-    const data = await res.json();
-    setProducts(data.products || []);
+    try {
+      const res = await fetch('/api/admin/products');
+      const data = await res.json();
+      setProducts(data.products || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
   };
 
   const fetchCategories = async () => {
-    const res = await fetch('/api/admin/categories');
-    const data = await res.json();
-    setCategories(data.categories || []);
+    try {
+      const res = await fetch('/api/admin/categories');
+      const data = await res.json();
+      setCategories(data.categories || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
   };
 
   const handleLogout = async () => {
@@ -231,7 +239,25 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4af37]" />
+      </div>
+    );
+  }
+
+  // Show login prompt if not authenticated (NO REDIRECT)
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a14]">
+        <div className="text-center">
+          <h2 className="text-white text-2xl font-heading mb-4">Acceso restringido</h2>
+          <p className="text-white/60 mb-8">Debes iniciar sesión para acceder al panel de administración.</p>
+          <Link
+            href="/login"
+            className="bg-[#d4af37] text-[#0a0a14] px-8 py-3 font-medium uppercase tracking-widest hover:bg-[#d4af37]/90 transition-colors"
+          >
+            Iniciar Sesión
+          </Link>
+        </div>
       </div>
     );
   }
@@ -239,7 +265,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-primary text-white px-6 py-4 flex items-center justify-between">
+      <header className="bg-[#0a0a14] text-white px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/" className="font-heading text-xl">333 Joyas</Link>
           <span className="text-white/50 text-sm">/ Admin</span>
@@ -248,7 +274,7 @@ export default function AdminPage() {
           <span className="text-white/70 text-sm">{user?.email}</span>
           <button
             onClick={handleLogout}
-            className="text-sm text-white/70 hover:text-accent transition-colors"
+            className="text-sm text-white/70 hover:text-[#d4af37] transition-colors"
           >
             Cerrar sesión
           </button>
@@ -262,7 +288,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('productos')}
             className={`pb-4 px-2 text-sm uppercase tracking-widest transition-colors ${
               activeTab === 'productos'
-                ? 'text-accent border-b-2 border-accent'
+                ? 'text-[#d4af37] border-b-2 border-[#d4af37]'
                 : 'text-muted hover:text-primary'
             }`}
           >
@@ -272,7 +298,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('nosotros')}
             className={`pb-4 px-2 text-sm uppercase tracking-widest transition-colors ${
               activeTab === 'nosotros'
-                ? 'text-accent border-b-2 border-accent'
+                ? 'text-[#d4af37] border-b-2 border-[#d4af37]'
                 : 'text-muted hover:text-primary'
             }`}
           >
@@ -305,86 +331,79 @@ export default function AdminPage() {
               <h2 className="font-heading text-2xl text-primary">Productos</h2>
               <button
                 onClick={openNewProduct}
-                className="bg-accent text-white px-6 py-2 text-sm uppercase tracking-widest hover:bg-accent/90 transition-colors"
+                className="bg-[#d4af37] text-[#0a0a14] px-6 py-2 text-sm uppercase tracking-widest hover:bg-[#d4af37]/90 transition-colors"
               >
                 + Nuevo Producto
               </button>
             </div>
 
-        {/* Actions */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-heading text-2xl text-primary">Productos</h2>
-          <button
-            onClick={openNewProduct}
-            className="bg-accent text-white px-6 py-2 text-sm uppercase tracking-widest hover:bg-accent/90 transition-colors"
-          >
-            + Nuevo Producto
-          </button>
-        </div>
-
-        {/* Products Table */}
-        <div className="bg-white shadow-sm overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-border">
-              <tr>
-                <th className="text-left px-6 py-4 text-sm font-medium text-muted">Producto</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-muted">Categoría</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-muted">Precio</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-muted">Estado</th>
-                <th className="text-right px-6 py-4 text-sm font-medium text-muted">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product.id} className="border-b border-border hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-100 overflow-hidden">
-                        {JSON.parse(product.images || '[]')[0] && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={JSON.parse(product.images)[0]}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-medium text-primary">{product.name}</p>
-                        <p className="text-sm text-muted">{product.sku}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-muted">{product.category_name || '-'}</td>
-                  <td className="px-6 py-4 text-sm text-primary font-medium">
-                    ${product.price.toLocaleString()} {product.currency}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-block px-2 py-1 text-xs rounded ${
-                      product.in_stock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
-                      {product.in_stock ? 'En stock' : 'Agotado'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => openEditProduct(product)}
-                      className="text-accent hover:text-accent/80 text-sm mr-3"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="text-red-600 hover:text-red-800 text-sm"
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            {/* Products Table */}
+            <div className="bg-white shadow-sm overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-border">
+                  <tr>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-muted">Producto</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-muted">Categoría</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-muted">Precio</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-muted">Estado</th>
+                    <th className="text-right px-6 py-4 text-sm font-medium text-muted">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((product) => (
+                    <tr key={product.id} className="border-b border-border hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-gray-100 overflow-hidden">
+                            {(() => {
+                              try {
+                                const imgs = JSON.parse(product.images || '[]');
+                                if (imgs[0]) {
+                                  return (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={imgs[0]} alt={product.name} className="w-full h-full object-cover" />
+                                  );
+                                }
+                              } catch {}
+                              return null;
+                            })()}
+                          </div>
+                          <div>
+                            <p className="font-medium text-primary">{product.name}</p>
+                            <p className="text-sm text-muted">{product.sku}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-muted">{product.category_name || '-'}</td>
+                      <td className="px-6 py-4 text-sm text-primary font-medium">
+                        ${product.price.toLocaleString()} {product.currency}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-block px-2 py-1 text-xs rounded ${
+                          product.in_stock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
+                          {product.in_stock ? 'En stock' : 'Agotado'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => openEditProduct(product)}
+                          className="text-[#d4af37] hover:text-[#d4af37]/80 text-sm mr-3"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          className="text-red-600 hover:text-red-800 text-sm"
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
 
@@ -396,7 +415,7 @@ export default function AdminPage() {
             </p>
             <Link
               href="/admin/nosotros"
-              className="inline-block bg-accent text-white px-8 py-3 text-sm uppercase tracking-widest hover:bg-accent/90 transition-colors"
+              className="inline-block bg-[#d4af37] text-[#0a0a14] px-8 py-3 text-sm uppercase tracking-widest hover:bg-[#d4af37]/90 transition-colors"
             >
               Ir al Editor de Nosotros
             </Link>
@@ -433,7 +452,7 @@ export default function AdminPage() {
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div>
@@ -443,7 +462,7 @@ export default function AdminPage() {
                         type="text"
                         value={formData.slug}
                         onChange={(e) => setFormData((p) => ({ ...p, slug: e.target.value }))}
-                        className="flex-1 px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                        className="flex-1 px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                       />
                       <button
                         type="button"
@@ -462,7 +481,7 @@ export default function AdminPage() {
                     type="text"
                     value={formData.short_description}
                     onChange={(e) => setFormData((p) => ({ ...p, short_description: e.target.value }))}
-                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                   />
                 </div>
 
@@ -472,7 +491,7 @@ export default function AdminPage() {
                     value={formData.description}
                     onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
                     rows={3}
-                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                   />
                 </div>
 
@@ -483,7 +502,7 @@ export default function AdminPage() {
                       type="number"
                       value={formData.price}
                       onChange={(e) => setFormData((p) => ({ ...p, price: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div>
@@ -492,7 +511,7 @@ export default function AdminPage() {
                       type="text"
                       value={formData.sku}
                       onChange={(e) => setFormData((p) => ({ ...p, sku: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
@@ -503,7 +522,7 @@ export default function AdminPage() {
                     <select
                       value={formData.category_id}
                       onChange={(e) => setFormData((p) => ({ ...p, category_id: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                     >
                       <option value="">Seleccionar...</option>
                       {categories.map((cat) => (
@@ -518,7 +537,7 @@ export default function AdminPage() {
                       value={formData.materials}
                       onChange={(e) => setFormData((p) => ({ ...p, materials: e.target.value }))}
                       placeholder="Oro 18k, Diamantes"
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
@@ -530,7 +549,7 @@ export default function AdminPage() {
                       type="number"
                       value={formData.weight_grams}
                       onChange={(e) => setFormData((p) => ({ ...p, weight_grams: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                   <div>
@@ -539,7 +558,7 @@ export default function AdminPage() {
                       type="text"
                       value={formData.dimensions}
                       onChange={(e) => setFormData((p) => ({ ...p, dimensions: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-accent"
+                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
                     />
                   </div>
                 </div>
@@ -558,7 +577,7 @@ export default function AdminPage() {
                     />
                     <label
                       htmlFor="image-upload"
-                      className="cursor-pointer text-accent hover:text-accent/80 text-sm"
+                      className="cursor-pointer text-[#d4af37] hover:text-[#d4af37]/80 text-sm"
                     >
                       {uploading ? 'Subiendo...' : 'Click para subir imágenes'}
                     </label>
@@ -614,7 +633,7 @@ export default function AdminPage() {
                   type="button"
                   onClick={handleSave}
                   disabled={saving}
-                  className="px-6 py-2 bg-accent text-white hover:bg-accent/90 disabled:opacity-50"
+                  className="px-6 py-2 bg-[#d4af37] text-[#0a0a14] hover:bg-[#d4af37]/90 disabled:opacity-50"
                 >
                   {saving ? 'Guardando...' : 'Guardar'}
                 </button>
