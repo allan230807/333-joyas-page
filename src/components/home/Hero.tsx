@@ -138,7 +138,6 @@ export default function Hero() {
               className="inline-flex items-center gap-3 border-2 border-[#d4af37]/60 text-[#d4af37] px-12 py-5 font-bold text-lg hover:bg-[#d4af37] hover:text-[#0a0a14] transition-all duration-300 rounded-sm"
             >
               <span>WhatsApp</span>
-              <span>💬</span>
             </Link>
           </motion.div>
         </motion.div>

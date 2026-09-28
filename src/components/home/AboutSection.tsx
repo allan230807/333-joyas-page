@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
+import { SearchIcon, CheckIcon, DiamondIcon } from '@/components/icons'
+import { ReactNode } from 'react'
 
 function AnimatedJewel({ delay }: { delay: number }) {
   return (
@@ -68,24 +70,31 @@ function AnimatedJewel({ delay }: { delay: number }) {
   )
 }
 
-const steps = [
+interface Step {
+  number: string
+  title: string
+  description: string
+  icon: ReactNode
+}
+
+const steps: Step[] = [
   {
     number: '01',
     title: 'Selección',
     description: 'Elegimos personalmente cada joya nueva, buscando las piezas con mejor acabado y pureza.',
-    icon: '🔍',
+    icon: <SearchIcon size={32} />,
   },
   {
     number: '02',
     title: 'Verificación',
     description: 'Cada pieza pasa por un riguroso control de calidad. Autenticidad y pureza garantizadas.',
-    icon: '✓',
+    icon: <CheckIcon size={32} />,
   },
   {
     number: '03',
     title: 'Publicación',
     description: 'Las joyas verificadas se publican en nuestro catálogo, listas para ti.',
-    icon: '✦',
+    icon: <DiamondIcon size={32} />,
   },
 ]
 

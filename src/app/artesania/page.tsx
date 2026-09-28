@@ -1,9 +1,10 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, ReactNode } from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
+import { SearchIcon, CheckIcon, DiamondIcon } from '@/components/icons';
 
 function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
@@ -18,7 +19,7 @@ function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; dela
   );
 }
 
-function AnimatedStep({ step, index }: { step: { title: string; description: string; icon: string }; index: number }) {
+function AnimatedStep({ step, index }: { step: { title: string; description: string; icon: ReactNode }; index: number }) {
   return (
     <ScrollReveal delay={index * 0.2}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center my-20 md:my-36">
@@ -35,25 +36,26 @@ function AnimatedStep({ step, index }: { step: { title: string; description: str
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: index * 0.3 }}
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <motion.span
-                className="text-7xl"
+              <motion.div
+                className="text-[#d4af37]"
                 animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               >
                 {step.icon}
-              </motion.span>
+              </motion.div>
             </div>
           </div>
         </div>
         <div className={index % 2 === 0 ? 'md:order-2' : 'md:order-1'}>
           <motion.span
-            className="text-[#d4af37] text-sm tracking-[0.3em] font-body uppercase"
+            className="text-[#d4af37] text-sm tracking-[0.3em] font-body uppercase flex items-center gap-2"
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: index * 0.2 + 0.2 }}
           >
             Paso {index + 1}
+            <CheckIcon size={16} />
           </motion.span>
           <motion.h2
             className="text-h3 font-heading text-white mt-2"
@@ -83,17 +85,17 @@ const steps = [
   {
     title: 'Selección',
     description: 'Elegimos personalmente cada joya nueva, buscando las piezas con mejor acabado y pureza. Cada pieza es evaluada por nuestros expertos.',
-    icon: '🔍',
+    icon: <SearchIcon size={64} />,
   },
   {
     title: 'Verificación',
     description: 'Cada pieza pasa por un riguroso control de calidad. Autenticidad y pureza garantizadas con certificado incluido.',
-    icon: '✓',
+    icon: <CheckIcon size={64} />,
   },
   {
     title: 'Publicación',
     description: 'Las joyas verificadas se publican en nuestro catálogo, listas para ti. Solo las mejores piezas llegan a nuestra tienda.',
-    icon: '✦',
+    icon: <DiamondIcon size={64} />,
   },
 ];
 
@@ -101,6 +103,7 @@ export default function ArtesaniaPage() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+
 
   return (
     <div ref={ref} className="min-h-screen bg-[#0a0a14]">
