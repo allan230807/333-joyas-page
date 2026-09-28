@@ -1,15 +1,6 @@
 import { cookies } from 'next/headers';
 import { SESSION_COOKIE } from './constants';
 import { sign } from './session';
-import crypto from 'crypto';
-
-const ADMIN_EMAIL = 'ararciahurtado@gmail.com';
-const ADMIN_PASSWORD = 'Akira100*';
-const SECRET = '333joyas-secure-secret-2024';
-
-function hashPassword(password: string): string {
-  return crypto.createHash('sha256').update(password + SECRET).digest('hex');
-}
 
 interface AdminUser {
   id: number;
@@ -17,14 +8,21 @@ interface AdminUser {
   role: string;
 }
 
+const USERS = [
+  { id: 1, email: 'ararciahurtado@gmail.com', password: 'Akira100*' },
+  { id: 2, email: 'alexander', password: '050305' },
+];
+
 export async function login(email: string, password: string): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
-  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+  const user = USERS.find((u) => u.email === email && u.password === password);
+
+  if (!user) {
     return { success: false, error: 'Credenciales inválidas' };
   }
 
   const sessionData = JSON.stringify({
-    id: 1,
-    email: ADMIN_EMAIL,
+    id: user.id,
+    email: user.email,
     role: 'admin',
     exp: Date.now() + 24 * 60 * 60 * 1000,
   });
@@ -41,7 +39,7 @@ export async function login(email: string, password: string): Promise<{ success:
 
   return {
     success: true,
-    user: { id: 1, email: ADMIN_EMAIL, role: 'admin' },
+    user: { id: user.id, email: user.email, role: 'admin' },
   };
 }
 
