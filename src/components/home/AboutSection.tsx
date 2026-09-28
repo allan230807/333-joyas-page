@@ -3,6 +3,71 @@
 import { motion } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
 
+function AnimatedJewel({ delay }: { delay: number }) {
+  return (
+    <motion.div
+      className="absolute inset-0 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay, duration: 0.5 }}
+    >
+      <motion.svg
+        width="200"
+        height="200"
+        viewBox="0 0 200 200"
+        fill="none"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+      >
+        {/* Outer ring */}
+        <motion.circle
+          cx="100"
+          cy="100"
+          r="90"
+          stroke="#d4af37"
+          strokeWidth="2"
+          strokeDasharray="10 5"
+          animate={{ strokeDashoffset: [0, 30] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+        />
+        {/* Inner ring */}
+        <motion.circle
+          cx="100"
+          cy="100"
+          r="70"
+          stroke="#d4af37"
+          strokeWidth="1"
+          strokeDasharray="5 10"
+          animate={{ strokeDashoffset: [0, -30] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+        />
+        {/* Diamond shape */}
+        <motion.path
+          d="M100 40 L140 100 L100 160 L60 100 Z"
+          stroke="#d4af37"
+          strokeWidth="2"
+          fill="none"
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 3, repeat: Infinity }}
+          style={{ transformOrigin: 'center' }}
+        />
+        {/* Sparkles */}
+        {[...Array(8)].map((_, i) => (
+          <motion.circle
+            key={i}
+            cx={100 + Math.cos((i * Math.PI) / 4) * 80}
+            cy={100 + Math.sin((i * Math.PI) / 4) * 80}
+            r="2"
+            fill="#d4af37"
+            animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 2, delay: i * 0.25, repeat: Infinity }}
+          />
+        ))}
+      </motion.svg>
+    </motion.div>
+  )
+}
+
 const steps = [
   {
     number: '01',
@@ -26,8 +91,13 @@ const steps = [
 
 export default function AboutSection() {
   return (
-    <section className="py-32 bg-white overflow-hidden">
-      <Container>
+    <section className="py-32 bg-[#0a0a14] relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-20">
+        <AnimatedJewel delay={0} />
+      </div>
+
+      <Container className="relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -37,7 +107,7 @@ export default function AboutSection() {
           className="text-center mb-24"
         >
           <motion.span
-            className="text-accent text-xs tracking-[0.4em] uppercase font-body"
+            className="text-[#d4af37] text-xs tracking-[0.4em] uppercase font-body"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -46,7 +116,7 @@ export default function AboutSection() {
             Nuestro Proceso
           </motion.span>
           <motion.h2
-            className="text-h2 md:text-5xl text-primary font-heading mt-6 leading-tight"
+            className="text-h2 md:text-5xl text-white font-heading mt-6 leading-tight"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -55,7 +125,7 @@ export default function AboutSection() {
             De la selección a tus manos
           </motion.h2>
           <motion.p
-            className="text-muted text-body mt-6 max-w-xl mx-auto font-body leading-relaxed"
+            className="text-white/60 text-body mt-6 max-w-xl mx-auto font-body leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -67,7 +137,7 @@ export default function AboutSection() {
           </motion.p>
         </motion.div>
 
-        {/* Steps */}
+        {/* Steps with animated connection */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           {steps.map((step, index) => (
             <motion.div
@@ -82,7 +152,7 @@ export default function AboutSection() {
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-px">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-accent/40 to-accent/10"
+                    className="h-full bg-gradient-to-r from-[#d4af37]/40 to-[#d4af37]/10"
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
@@ -95,13 +165,13 @@ export default function AboutSection() {
               <div className="text-center group">
                 {/* Number */}
                 <motion.div
-                  className="inline-flex items-center justify-center w-24 h-24 rounded-full border border-accent/20 mb-8 relative"
-                  whileHover={{ borderColor: 'rgba(201, 169, 110, 0.5)' }}
+                  className="inline-flex items-center justify-center w-24 h-24 rounded-full border border-[#d4af37]/20 mb-8 relative"
+                  whileHover={{ borderColor: 'rgba(212, 175, 55, 0.5)' }}
                   transition={{ duration: 0.3 }}
                 >
-                  <span className="text-accent text-3xl font-heading">{step.number}</span>
+                  <span className="text-[#d4af37] text-3xl font-heading">{step.number}</span>
                   <motion.div
-                    className="absolute inset-0 rounded-full border border-accent/10"
+                    className="absolute inset-0 rounded-full border border-[#d4af37]/10"
                     animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.1, 0.3] }}
                     transition={{ duration: 3, repeat: Infinity, delay: index * 0.5 }}
                   />
@@ -117,8 +187,8 @@ export default function AboutSection() {
                 </motion.div>
 
                 {/* Content */}
-                <h3 className="font-heading text-xl text-primary mb-3">{step.title}</h3>
-                <p className="text-muted text-body font-body leading-relaxed max-w-xs mx-auto">
+                <h3 className="font-heading text-xl text-white mb-3">{step.title}</h3>
+                <p className="text-white/50 text-body font-body leading-relaxed max-w-xs mx-auto">
                   {step.description}
                 </p>
               </div>
@@ -134,11 +204,11 @@ export default function AboutSection() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="mt-24 text-center"
         >
-          <div className="inline-block border border-accent/20 px-12 py-8">
-            <p className="text-primary text-lg md:text-xl font-heading italic leading-relaxed">
+          <div className="inline-block border border-[#d4af37]/20 px-12 py-8">
+            <p className="text-white text-lg md:text-xl font-heading italic leading-relaxed">
               "Solo publicamos lo que nosotros mismos llevaríamos puestos"
             </p>
-            <span className="text-accent text-sm mt-4 block">— 333 Joyas</span>
+            <span className="text-[#d4af37] text-sm mt-4 block">— 333 Joyas</span>
           </div>
         </motion.div>
       </Container>

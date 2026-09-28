@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
@@ -10,6 +10,20 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  // Check if already logged in
+  useEffect(() => {
+    fetch('/api/auth/session')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) {
+          router.replace('/admin');
+        }
+        setChecking(false);
+      })
+      .catch(() => setChecking(false));
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,8 +40,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (data.success) {
-        router.push('/admin');
-        router.refresh();
+        router.replace('/admin');
       } else {
         setError(data.error || 'Error al iniciar sesión');
       }
@@ -38,8 +51,16 @@ export default function LoginPage() {
     }
   };
 
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a14]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4af37]" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-primary px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a14] px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -48,13 +69,13 @@ export default function LoginPage() {
       >
         <div className="bg-white p-8 shadow-2xl">
           <div className="text-center mb-8">
-            <h1 className="font-heading text-3xl text-primary mb-2">333 Joyas</h1>
+            <h1 className="font-heading text-3xl text-[#0a0a14] mb-2">333 Joyas</h1>
             <p className="text-muted text-sm">Panel de Administración</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-[#0a0a14] mb-2">
                 Correo electrónico
               </label>
               <input
@@ -63,13 +84,13 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-border focus:outline-none focus:border-accent transition-colors"
+                className="w-full px-4 py-3 border border-border focus:outline-none focus:border-[#d4af37] transition-colors"
                 placeholder="tu@email.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-primary mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-[#0a0a14] mb-2">
                 Contraseña
               </label>
               <input
@@ -78,7 +99,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-border focus:outline-none focus:border-accent transition-colors"
+                className="w-full px-4 py-3 border border-border focus:outline-none focus:border-[#d4af37] transition-colors"
                 placeholder="••••••••"
               />
             </div>
@@ -96,7 +117,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-accent text-white py-3 font-medium uppercase tracking-widest hover:bg-accent/90 transition-colors disabled:opacity-50"
+              className="w-full bg-[#d4af37] text-[#0a0a14] py-3 font-medium uppercase tracking-widest hover:bg-[#d4af37]/90 transition-colors disabled:opacity-50"
             >
               {loading ? 'Ingresando...' : 'Ingresar'}
             </button>
@@ -104,7 +125,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-white/50 text-sm mt-6">
-          <a href="/" className="hover:text-accent transition-colors">
+          <a href="/" className="hover:text-[#d4af37] transition-colors">
             ← Volver a la tienda
           </a>
         </p>
