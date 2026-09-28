@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProducts, createProduct, type Product } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 import { requireAdmin } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -11,8 +11,19 @@ export async function GET() {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
   }
 
-  const products = getProducts();
-  return NextResponse.json({ products });
+  try {
+    const { data: products, error } = await supabase
+      .from('products')
+      .select('*, categories(name, slug)')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    return NextResponse.json({ products: products || [] });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return NextResponse.json({ error: 'Error al obtener productos' }, { status: 500 });
+  }
 }
 
 // POST create product
@@ -48,22 +59,28 @@ export async function POST(request: Request) {
       );
     }
 
-    const product = createProduct({
-      name,
-      slug,
-      description: description || '',
-      short_description: short_description || '',
-      price,
-      currency: currency || 'USD',
-      category_id: category_id || 0,
-      materials: materials || [],
-      featured: featured || false,
-      in_stock: in_stock !== false,
-      sku: sku || '',
-      weight_grams: weight_grams || 0,
-      dimensions: dimensions || '',
-      images: images || [],
-    });
+    const { data: product, error } = await supabase
+      .from('products')
+      .insert([{
+        name,
+        slug,
+        description: description || '',
+        short_description: short_description || '',
+        price,
+        currency: currency || 'USD',
+        category_id: category_id || null,
+        materials: materials || [],
+        featured: featured || false,
+        in_stock: in_stock !== false,
+        sku: sku || '',
+        weight_grams: weight_grams || null,
+        dimensions: dimensions || '',
+        images: images || [],
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true, product });
   } catch (error) {

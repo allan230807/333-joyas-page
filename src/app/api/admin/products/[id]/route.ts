@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProductById, updateProduct, deleteProduct } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 import { requireAdmin } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -14,13 +14,21 @@ export async function GET(_request: Request, { params }: Params) {
   }
 
   const { id } = await params;
-  const product = getProductById(parseInt(id));
 
-  if (!product) {
+  try {
+    const { data: product, error } = await supabase
+      .from('products')
+      .select('*, categories(name, slug)')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ product });
+  } catch (error) {
+    console.error('Error fetching product:', error);
     return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
   }
-
-  return NextResponse.json({ product });
 }
 
 // PUT update product
@@ -34,13 +42,19 @@ export async function PUT(request: Request, { params }: Params) {
     const { id } = await params;
     const body = await request.json();
 
-    const updated = updateProduct(parseInt(id), body);
+    const { data: product, error } = await supabase
+      .from('products')
+      .update({
+        ...body,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
 
-    if (!updated) {
-      return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
-    }
+    if (error) throw error;
 
-    return NextResponse.json({ success: true, product: updated });
+    return NextResponse.json({ success: true, product });
   } catch (error) {
     console.error('Error updating product:', error);
     return NextResponse.json({ error: 'Error al actualizar producto' }, { status: 500 });
@@ -55,11 +69,18 @@ export async function DELETE(_request: Request, { params }: Params) {
   }
 
   const { id } = await params;
-  const success = deleteProduct(parseInt(id));
 
-  if (!success) {
-    return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
+  try {
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    return NextResponse.json({ error: 'Error al eliminar producto' }, { status: 500 });
   }
-
-  return NextResponse.json({ success: true });
 }

@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server';
-import { getProducts, getProductsByCategory } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const categoryId = searchParams.get('category');
-
+export async function GET() {
   try {
-    const products = categoryId
-      ? getProductsByCategory(parseInt(categoryId))
-      : getProducts();
+    const { data: products, error } = await supabase
+      .from('products')
+      .select('*, categories(name, slug)')
+      .order('created_at', { ascending: false });
 
-    return NextResponse.json({ products });
+    if (error) throw error;
+
+    return NextResponse.json({ products: products || [] });
   } catch (error) {
     console.error('Error fetching products:', error);
-    return NextResponse.json({ error: 'Error al obtener productos' }, { status: 500 });
+    return NextResponse.json({ products: [] });
   }
 }
