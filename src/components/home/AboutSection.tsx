@@ -206,7 +206,7 @@ export default function AboutSection() {
         >
           <div className="inline-block border border-[#d4af37]/20 px-12 py-8">
             <p className="text-white text-lg md:text-xl font-heading italic leading-relaxed">
-              "Solo publicamos lo que nosotros mismos llevaríamos puestos"
+              "Cada pieza que publicamos ha pasado por nuestras manos primero"
             </p>
             <span className="text-[#d4af37] text-sm mt-4 block">— 333 Joyas</span>
           </div>

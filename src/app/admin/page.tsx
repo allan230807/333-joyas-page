@@ -73,7 +73,7 @@ export default function AdminPage() {
       setUser(data.user);
       await Promise.all([fetchProducts(), fetchCategories()]);
     } catch {
-      // No session, just show empty state
+      // No session
     } finally {
       setLoading(false);
     }
@@ -102,7 +102,6 @@ export default function AdminPage() {
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/login');
-    router.refresh();
   };
 
   const openNewProduct = () => {
@@ -339,70 +338,77 @@ export default function AdminPage() {
 
             {/* Products Table */}
             <div className="bg-white shadow-sm overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-border">
-                  <tr>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted">Producto</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted">Categoría</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted">Precio</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted">Estado</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-muted">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((product) => (
-                    <tr key={product.id} className="border-b border-border hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-gray-100 overflow-hidden">
-                            {(() => {
-                              try {
-                                const imgs = JSON.parse(product.images || '[]');
-                                if (imgs[0]) {
-                                  return (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={imgs[0]} alt={product.name} className="w-full h-full object-cover" />
-                                  );
-                                }
-                              } catch {}
-                              return null;
-                            })()}
-                          </div>
-                          <div>
-                            <p className="font-medium text-primary">{product.name}</p>
-                            <p className="text-sm text-muted">{product.sku}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-muted">{product.category_name || '-'}</td>
-                      <td className="px-6 py-4 text-sm text-primary font-medium">
-                        ${product.price.toLocaleString()} {product.currency}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-block px-2 py-1 text-xs rounded ${
-                          product.in_stock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {product.in_stock ? 'En stock' : 'Agotado'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => openEditProduct(product)}
-                          className="text-[#d4af37] hover:text-[#d4af37]/80 text-sm mr-3"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => handleDelete(product.id)}
-                          className="text-red-600 hover:text-red-800 text-sm"
-                        >
-                          Eliminar
-                        </button>
-                      </td>
+              {products.length === 0 ? (
+                <div className="p-12 text-center">
+                  <p className="text-muted">No hay productos todavía.</p>
+                  <p className="text-sm text-muted/60 mt-2">Agrega tu primer producto con el botón de arriba.</p>
+                </div>
+              ) : (
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-border">
+                    <tr>
+                      <th className="text-left px-6 py-4 text-sm font-medium text-muted">Producto</th>
+                      <th className="text-left px-6 py-4 text-sm font-medium text-muted">Categoría</th>
+                      <th className="text-left px-6 py-4 text-sm font-medium text-muted">Precio</th>
+                      <th className="text-left px-6 py-4 text-sm font-medium text-muted">Estado</th>
+                      <th className="text-right px-6 py-4 text-sm font-medium text-muted">Acciones</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => (
+                      <tr key={product.id} className="border-b border-border hover:bg-gray-50">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gray-100 overflow-hidden">
+                              {(() => {
+                                try {
+                                  const imgs = JSON.parse(product.images || '[]');
+                                  if (imgs[0]) {
+                                    return (
+                                      // eslint-disable-next-line @next/next/no-img-element
+                                      <img src={imgs[0]} alt={product.name} className="w-full h-full object-cover" />
+                                    );
+                                  }
+                                } catch {}
+                                return null;
+                              })()}
+                            </div>
+                            <div>
+                              <p className="font-medium text-primary">{product.name}</p>
+                              <p className="text-sm text-muted">{product.sku}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-muted">{product.category_name || '-'}</td>
+                        <td className="px-6 py-4 text-sm text-primary font-medium">
+                          ${product.price.toLocaleString()} {product.currency}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-block px-2 py-1 text-xs rounded ${
+                            product.in_stock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                            {product.in_stock ? 'En stock' : 'Agotado'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            onClick={() => openEditProduct(product)}
+                            className="text-[#d4af37] hover:text-[#d4af37]/80 text-sm mr-3"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            className="text-red-600 hover:text-red-800 text-sm"
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </>
         )}
@@ -516,30 +522,29 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-primary mb-1">Categoría</label>
-                    <select
-                      value={formData.category_id}
-                      onChange={(e) => setFormData((p) => ({ ...p, category_id: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
-                    >
-                      <option value="">Seleccionar...</option>
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-primary mb-1">Materiales (separados por coma)</label>
-                    <input
-                      type="text"
-                      value={formData.materials}
-                      onChange={(e) => setFormData((p) => ({ ...p, materials: e.target.value }))}
-                      placeholder="Oro 18k, Diamantes"
-                      className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-primary mb-1">Categoría</label>
+                  <select
+                    value={formData.category_id}
+                    onChange={(e) => setFormData((p) => ({ ...p, category_id: e.target.value }))}
+                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                  >
+                    <option value="">Seleccionar categoría...</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-primary mb-1">Tipo de tejido / Material</label>
+                  <input
+                    type="text"
+                    value={formData.materials}
+                    onChange={(e) => setFormData((p) => ({ ...p, materials: e.target.value }))}
+                    placeholder="Oro 18k, Cadena venezolana, etc."
+                    className="w-full px-3 py-2 border border-border focus:outline-none focus:border-[#d4af37]"
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

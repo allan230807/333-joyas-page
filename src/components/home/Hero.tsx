@@ -1,13 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
 
 function GoldParticle({ delay, x, y }: { delay: number; x: number; y: number }) {
   return (
     <motion.div
-      className="absolute w-1 h-1 rounded-full bg-accent"
+      className="absolute w-1 h-1 rounded-full bg-[#d4af37]"
       style={{ left: `${x}%`, top: `${y}%` }}
       animate={{
         y: [0, -30, 0],
@@ -20,17 +20,6 @@ function GoldParticle({ delay, x, y }: { delay: number; x: number; y: number }) 
         repeat: Infinity,
         ease: 'easeInOut',
       }}
-    />
-  )
-}
-
-function FloatingRing({ delay, size, x, y }: { delay: number; size: number; x: number; y: number }) {
-  return (
-    <motion.div
-      className="absolute rounded-full border border-accent/10"
-      style={{ width: size, height: size, left: `${x}%`, top: `${y}%` }}
-      animate={{ rotate: 360 }}
-      transition={{ duration: 20 + delay * 5, repeat: Infinity, ease: 'linear' }}
     />
   )
 }
@@ -53,38 +42,45 @@ export default function Hero() {
         className="absolute inset-0"
         animate={{
           background: [
-            'radial-gradient(ellipse at 20% 50%, #1a1a2e 0%, #0f0f1a 100%)',
-            'radial-gradient(ellipse at 80% 50%, #1a1a2e 0%, #0f0f1a 100%)',
-            'radial-gradient(ellipse at 50% 20%, #1a1a2e 0%, #0f0f1a 100%)',
-            'radial-gradient(ellipse at 20% 50%, #1a1a2e 0%, #0f0f1a 100%)',
+            'radial-gradient(ellipse at 20% 50%, #0a0a14 0%, #050508 100%)',
+            'radial-gradient(ellipse at 80% 50%, #0a0a14 0%, #050508 100%)',
+            'radial-gradient(ellipse at 50% 20%, #0a0a14 0%, #050508 100%)',
+            'radial-gradient(ellipse at 20% 50%, #0a0a14 0%, #050508 100%)',
           ],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
       />
 
       {/* Gold particles */}
-      {[...Array(15)].map((_, i) => (
-        <GoldParticle key={i} delay={i * 0.3} x={Math.random() * 100} y={Math.random() * 100} />
+      {[...Array(20)].map((_, i) => (
+        <GoldParticle key={i} delay={i * 0.2} x={Math.random() * 100} y={Math.random() * 100} />
       ))}
-
-      {/* Floating rings */}
-      <FloatingRing delay={0} size={300} x={-5} y={10} />
-      <FloatingRing delay={1} size={200} x={85} y={60} />
-      <FloatingRing delay={2} size={150} x={70} y={-5} />
 
       {/* Content */}
       <motion.div className="relative z-10 max-w-6xl mx-auto px-6 py-20 text-center" style={{ y, opacity }}>
+        {/* Small brand name above */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-6"
+        >
+          <span className="text-[#d4af37] text-sm tracking-[0.5em] uppercase font-heading">
+            333 Joyas
+          </span>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <motion.span
-            className="inline-block text-accent text-sm md:text-base tracking-[0.4em] uppercase mb-8 font-body border border-accent/30 px-8 py-3"
-            animate={{ borderColor: ['rgba(201, 169, 110, 0.3)', 'rgba(201, 169, 110, 0.6)', 'rgba(201, 169, 110, 0.3)'] }}
+            className="inline-block text-[#d4af37] text-sm md:text-base tracking-[0.3em] uppercase mb-8 font-body border border-[#d4af37]/30 px-8 py-3"
+            animate={{ borderColor: ['rgba(212, 175, 55, 0.3)', 'rgba(212, 175, 55, 0.6)', 'rgba(212, 175, 55, 0.3)'] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            Oro de inversión · Caracas
+            Tu joyería de confianza
           </motion.span>
         </motion.div>
 
@@ -96,7 +92,7 @@ export default function Hero() {
         >
           Tu patrimonio en{' '}
           <motion.span
-            className="inline-block bg-gradient-to-r from-accent via-[#f5e6c8] to-accent bg-clip-text text-transparent bg-[length:200%_auto]"
+            className="inline-block bg-gradient-to-r from-[#d4af37] via-[#f5e6c8] to-[#d4af37] bg-clip-text text-transparent bg-[length:200%_auto]"
             animate={{ backgroundPosition: ['0% center', '200% center'] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
           >
@@ -110,7 +106,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
         >
-          Tienda emergente especializada en prendas de oro de primera calidad.
+          Prendas de oro de la más alta calidad, seleccionadas y verificadas por expertos.
           <br className="hidden md:block" />
           Delivery personal en Caracas. Compra, vende o invierte con confianza.
         </motion.p>
@@ -124,7 +120,7 @@ export default function Hero() {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/catalogo"
-              className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-accent to-[#d4b87a] text-primary px-12 py-5 font-bold text-lg overflow-hidden rounded-sm shadow-lg shadow-accent/25 transition-shadow hover:shadow-xl hover:shadow-accent/40"
+              className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-[#d4af37] to-[#e6c87a] text-[#0a0a14] px-12 py-5 font-bold text-lg overflow-hidden rounded-sm shadow-lg shadow-[#d4af37]/25 transition-shadow hover:shadow-xl hover:shadow-[#d4af37]/40"
             >
               <span className="relative z-10">Ver Catálogo</span>
               <motion.span className="relative z-10" animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
@@ -139,7 +135,7 @@ export default function Hero() {
               href="https://wa.me/584241933606"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 border-2 border-accent/60 text-accent px-12 py-5 font-bold text-lg hover:bg-accent hover:text-primary transition-all duration-300 rounded-sm"
+              className="inline-flex items-center gap-3 border-2 border-[#d4af37]/60 text-[#d4af37] px-12 py-5 font-bold text-lg hover:bg-[#d4af37] hover:text-[#0a0a14] transition-all duration-300 rounded-sm"
             >
               <span>WhatsApp</span>
               <span>💬</span>
@@ -158,10 +154,10 @@ export default function Hero() {
             <motion.span
               key={badge}
               className="flex items-center gap-2 cursor-default"
-              whileHover={{ scale: 1.1, color: 'rgba(201, 169, 110, 0.8)' }}
+              whileHover={{ scale: 1.1, color: 'rgba(212, 175, 55, 0.8)' }}
               transition={{ duration: 0.2 }}
             >
-              <span className="w-2 h-2 bg-accent rounded-full" />
+              <span className="w-2 h-2 bg-[#d4af37] rounded-full" />
               {badge}
             </motion.span>
           ))}
@@ -176,7 +172,7 @@ export default function Hero() {
       >
         <div className="w-8 h-14 border-2 border-white/20 rounded-full flex justify-center pt-3">
           <motion.div
-            className="w-1.5 h-3 bg-accent rounded-full"
+            className="w-1.5 h-3 bg-[#d4af37] rounded-full"
             animate={{ y: [0, 16, 0], opacity: [1, 0.3, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
