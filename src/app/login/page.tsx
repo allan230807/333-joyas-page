@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
+const ADMIN_EMAIL = 'ararciahurtado@gmail.com';
+const ADMIN_PASSWORD = 'Akira100*';
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -12,17 +15,23 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  // Check if already logged in
+  // Check if already logged in via API
   useEffect(() => {
     fetch('/api/auth/session')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error('No session');
+        return res.json();
+      })
       .then((data) => {
         if (data.user) {
           router.replace('/admin');
+          return;
         }
         setChecking(false);
       })
-      .catch(() => setChecking(false));
+      .catch(() => {
+        setChecking(false);
+      });
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,8 +53,9 @@ export default function LoginPage() {
       } else {
         setError(data.error || 'Error al iniciar sesión');
       }
-    } catch {
-      setError('Error de conexión');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Error de conexión. Intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -54,18 +64,36 @@ export default function LoginPage() {
   if (checking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a14]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4af37]" />
+        <motion.div
+          className="w-12 h-12 border-2 border-[#d4af37] border-t-transparent rounded-full"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a14] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a14] px-4 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-10">
+        <motion.div
+          className="w-96 h-96 rounded-full border border-[#d4af37]"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+        />
+        <motion.div
+          className="absolute w-64 h-64 rounded-full border border-[#d4af37]"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+        />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
         <div className="bg-white p-8 shadow-2xl">
           <div className="text-center mb-8">
@@ -108,7 +136,7 @@ export default function LoginPage() {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-red-600 text-sm"
+                className="text-red-600 text-sm text-center"
               >
                 {error}
               </motion.p>
@@ -117,9 +145,20 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#d4af37] text-[#0a0a14] py-3 font-medium uppercase tracking-widest hover:bg-[#d4af37]/90 transition-colors disabled:opacity-50"
+              className="w-full bg-[#d4af37] text-[#0a0a14] py-3 font-medium uppercase tracking-widest hover:bg-[#d4af37]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Ingresando...' : 'Ingresar'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <motion.span
+                    className="w-4 h-4 border-2 border-[#0a0a14] border-t-transparent rounded-full inline-block"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                  />
+                  Ingresando...
+                </span>
+              ) : (
+                'Ingresar'
+              )}
             </button>
           </form>
         </div>
