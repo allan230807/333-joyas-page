@@ -146,3 +146,27 @@
   animation: pulse-gold 2s ease-in-out infinite;
 }
 
+
+/* Tejidos animados (components/tejidos/TejidoAnimado.tsx) */
+.tejido-trazo path {
+  vector-effect: non-scaling-stroke;
+}
+
+.tejido-deriva {
+  animation-name: tejido-deriva;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes tejido-deriva {
+  to {
+    transform: translateX(calc(-1 * var(--periodo)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tejido-deriva {
+    animation: none;
+  }
+}
