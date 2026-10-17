@@ -93,6 +93,38 @@
   }
 }
 
+/* Oro con destello: una franja de luz recorre el texto cada pocos segundos y
+   un resplandor dorado lo rodea. Solo anima background-position (barato). */
+.oro-destello {
+  background-image: linear-gradient(
+    105deg,
+    #a8823a 0%,
+    #c9a45c 30%,
+    #e6c983 41%,
+    #fffaea 47%,
+    #e6c983 53%,
+    #c9a45c 64%,
+    #a8823a 100%
+  );
+  background-size: 300% 100%;
+  background-position: 100% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 22px rgba(201, 164, 92, 0.35));
+  animation: oro-destello 4s cubic-bezier(0.45, 0, 0.25, 1) 1.6s infinite;
+}
+
+@keyframes oro-destello {
+  0% {
+    background-position: 100% 50%;
+  }
+  55%,
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Tejidos animados (components/tejidos/TejidoAnimado.tsx) */
 .tejido-trazo path {
   vector-effect: non-scaling-stroke;
@@ -113,7 +145,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tejido-deriva,
-  .animate-brillo {
+  .animate-brillo,
+  .oro-destello {
     animation: none;
   }
 }

@@ -48,18 +48,30 @@ export default function Portada() {
       />
 
       <m.div style={{ y, opacity: opacidad }} className="contenedor relative z-10 pt-24 text-center">
-        <m.p
-          className="rotulo"
-          initial={{ opacity: 0, letterSpacing: '0.6em' }}
-          animate={{ opacity: 1, letterSpacing: '0.32em' }}
-          transition={{ duration: 1.4, ease: SUAVE }}
-        >
-          {MARCA.nombre} · Oro {QUILATES}k
-        </m.p>
+        <h1>
+          {/* Nombre de la marca: entra abriendo el espaciado de letras. */}
+          <m.span
+            className="block font-serif text-[clamp(2.4rem,11vw,4.5rem)] font-light uppercase leading-none text-marfil"
+            initial={{ opacity: 0, letterSpacing: '0.5em' }}
+            animate={{ opacity: 1, letterSpacing: '0.18em' }}
+            transition={{ duration: 1.4, ease: SUAVE }}
+          >
+            {MARCA.nombre}
+          </m.span>
+          <m.span
+            className="rotulo mt-4 block"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, ease: SUAVE, delay: 0.4 }}
+          >
+            Oro {QUILATES}k
+          </m.span>
 
-        <h1 className="mt-6 font-serif text-[clamp(4.5rem,24vw,11rem)] font-light italic leading-[0.9] tracking-tight">
-          <span className="texto-oro animate-brillo">
-            <LemaAnimado texto={MARCA.lema} />
+          {/* Lema en grande con destello de oro que lo recorre. */}
+          <span className="mt-5 block font-serif text-[clamp(4.8rem,26vw,12rem)] font-light italic leading-[0.9] tracking-tight">
+            <span className="oro-destello">
+              <LemaAnimado texto={MARCA.lema} />
+            </span>
           </span>
         </h1>
 
