@@ -70,6 +70,11 @@
     @apply boton border border-oro/50 text-marfil hover:border-oro hover:text-oro-claro;
   }
 
+  /* Campos de formulario del panel. 16px evita el zoom automático del iPhone. */
+  .campo {
+    @apply block min-h-[48px] w-full border border-linea bg-carbon px-4 text-base text-marfil placeholder:text-niebla/60 focus:border-oro focus:outline-none;
+  }
+
   .chip {
     @apply inline-flex min-h-[40px] shrink-0 items-center rounded-full border px-4 text-sm transition-colors duration-300;
   }

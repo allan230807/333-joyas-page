@@ -26,6 +26,7 @@ const nextConfig = {
   async redirects() {
     return [
       { source: '/artesania', destination: '/nosotros', permanent: true },
+      { source: '/login', destination: '/admin', permanent: true },
     ];
   },
 };
