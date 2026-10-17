@@ -1,132 +1,85 @@
-<p align="center">
+<div align="center">
 
-<img src="https://img.shields.io/badge/✨-333%20JOYAS-gold?style=for-the-badge" />
+<h1>333 Joyas</h1>
 
-</p>
+<p><em><strong>God First</strong></em></p>
 
-<h1 align="center">💎 333 Joyas 💎</h1>
+<p>La joyería en oro 18k de un amigo. Mi primera página web, donde el oro se encuentra con el código.</p>
 
-<p align="center">
-  <strong>La joyería artesanal de un amigo.</strong><br />
-  Mi primera página web — donde el lujo se encuentra con el código.
-</p>
+<img src="https://img.shields.io/badge/Oro-18k-c9a45c?style=for-the-badge" />
+<img src="https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=next.js&logoColor=white" />
+<img src="https://img.shields.io/badge/React-18-149ECA?style=for-the-badge&logo=react&logoColor=white" />
+<img src="https://img.shields.io/badge/Supabase-Postgres%20%2B%20Storage-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+<img src="https://img.shields.io/badge/Framer%20Motion-11-FF0055?style=for-the-badge&logo=framer&logoColor=white" />
 
-<p align="center">
-  <a href="#-demostración">Demo</a> •
-  <a href="#-características">Características</a> •
-  <a href="#-tecnologías">Tecnologías</a> •
-  <a href="#-cómo-empezar">Cómo empezar</a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=next.js&logoColor=white" />
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
-  <img src="https://img.shields.io/badge/Tailwind-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white" />
-  <img src="https://img.shields.io/badge/Framer%20Motion-FF0055?style=for-the-badge&logo=framer&logoColor=white" />
-  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
-</p>
+</div>
 
 ---
 
-## 🌟 ¿Qué es 333 Joyas?
+## ✨ Qué tiene
 
-Una landing page elegante para la **joyería artesanal de un amigo**. No es solo una vitrina — es una experiencia visual cuidada al detalle. Cada pieza es única, hecha a mano, y el sitio transmite exactamente eso: **arte, confianza y perdurabilidad**.
+| | |
+|---|---|
+| **Lema "God First"** | Portada con el lema en letras que aparecen una a una y una cadena dorada que se dibuja al pie. |
+| **Solo oro 18k** | No existe otro quilataje en la base ni en el sitio: cada ficha dice *Oro 18k · 750 milésimas*. |
+| **Fotos de las joyas** | Se suben desde el teléfono en `/admin`, se comprimen solas y se guardan en Supabase Storage. |
+| **Animación del tejido** | 10 tejidos (rolo, cubano, franco, gucci, fígaro, cordón, espiga, singapur, bizantino, veneciana) dibujados en líneas finas que se revelan y derivan en bucle. |
+| **Peso en gramos** | Obligatorio en cada joya y visible en el catálogo, la ficha y el pedido por WhatsApp. |
+| **Pensada para teléfonos** | Carruseles con desplazamiento nativo, botón de WhatsApp fijo en la ficha, imágenes AVIF/WebP, animaciones que se pausan fuera de pantalla y respetan "reducir movimiento". |
+| **Mi selección** | El cliente arma una lista de piezas y la envía por WhatsApp con nombre, peso y enlace. |
 
-> *"Piezas únicas creadas para perdurar"*
+## 🧱 Cómo está hecha
 
----
+| Pieza | Dónde |
+|---|---|
+| Esquema de la base (tablas, seguridad RLS, bucket de fotos) | [`supabase/migrations/20261017000000_joyas_18k.sql`](supabase/migrations/20261017000000_joyas_18k.sql) |
+| Tejidos (nombres y dibujos) | [`src/lib/tejidos.ts`](src/lib/tejidos.ts), [`src/components/tejidos/`](src/components/tejidos) |
+| Marca, lema, contacto, 18k | [`src/lib/marca.ts`](src/lib/marca.ts) |
+| Lectura del catálogo | [`src/lib/catalogo.ts`](src/lib/catalogo.ts) |
+| Panel y subida de fotos | [`src/app/admin/`](src/app/admin) |
 
-## 🌟 Demostración
-
-| Sección | Qué incluye |
-|---------|-------------|
-| 🏠 **Home** | Hero cinematográfico, colecciones destacadas, proceso artesanal, testimonios, FAQ |
-| 📦 **Catálogo** | Grid de productos con filtros por categoría |
-| 🔍 **Detalle** | Galería, materiales, dimensiones, peso, SKU y CTA de WhatsApp |
-| 🛠️ **Artesanía** | Timeline: Diseño → Selección → Fundición → Engaste → Pulido |
-| 📄 **Legales** | Privacidad (RGPD) y Términos |
-
----
-
-## ✨ Características
-
-| Característica | Detalle |
-|----------------|---------|
-| 🎭 **Animaciones** | Framer Motion — scroll reveals, stagger, fade-ins |
-| 📱 **Responsive** | Mobile-first con menú hamburguesa |
-| 🔍 **SEO completo** | Metadata, OpenGraph, JSON-LD, sitemap, robots.txt |
-| 🛡️ **Rate limiting** | API de contacto protegida |
-| 🖼️ **Optimización** | Next.js Image, lazy loading |
-| ♿ **Accesible** | HTML semántico, navegación por teclado |
-| ⚡ **Rendimiento** | SSR/SSG con Next.js 14 |
+**Base de datos (Supabase):** `categorias`, `joyas` (tejido, peso, largo, ancho, precio opcional), `joya_fotos` (ruta en Storage, ancho, alto, orden) y `nosotros`. El público solo puede **leer** lo publicado; **escribir y subir fotos** solo puede un usuario registrado en `administradores`. Esto lo verifica la base de datos, no el navegador.
 
 ---
 
-## 🚀 Tecnologías
+## 🛠️ Puesta en marcha
 
-| Tecnología | Uso |
-|------------|-----|
-| **Next.js 14** | Framework — App Router, SSR/SSG |
-| **React 18 + TypeScript** | UI con tipado estático |
-| **Tailwind CSS 3.4** | Estilos utility-first |
-| **Framer Motion 11** | Animaciones fluidas |
-| **Supabase** | Backend (datos mock activos) |
-| **Vercel** | Deploy automático |
+### 1. Supabase (una sola vez)
 
----
+1. Crea un proyecto en [supabase.com](https://supabase.com) (el plan gratis alcanza).
+2. **SQL Editor → New query**: pega el contenido de `supabase/migrations/20261017000000_joyas_18k.sql` y pulsa **Run**. Crea las tablas, la seguridad y el bucket `joyas` para las fotos. Se puede volver a ejecutar sin problema.
+3. **Authentication → Users → Add user**: crea el usuario del administrador con una contraseña **nueva**.
+4. De vuelta en el SQL Editor, dale permisos (con tu correo):
+   ```sql
+   insert into public.administradores (user_id)
+   select id from auth.users where email = 'tu-correo@ejemplo.com';
+   ```
+5. **Project Settings → API**: copia la *Project URL* y la clave *anon public*.
 
-## 🎨 Sistema de Diseño
-
-| Color | Hex | Uso |
-|:------|:----|:----|
-| `primary` | `#1a1a2e` | Fondos oscuros, texto principal |
-| `accent` | `#c9a96e` | **Dorado** — acentos y precios |
-| `surface` | `#f8f6f3` | Fondo claro cálido |
-| `muted` | `#6b7280` | Texto secundario |
-
-**Tipografías:** Playfair Display (títulos) + Inter (body)
-
----
-
-## 🏗️ Estructura del Proyecto
-
-```
-src/
-├── app/                  # Páginas (App Router)
-│   ├── page.tsx          # 🏠 Home
-│   ├── catalogo/         # 📦 Catálogo + detalle [slug]
-│   ├── artesania/        # 🛠️ Proceso artesanal
-│   └── legal/            # 📄 Privacidad y Términos
-├── components/
-│   ├── home/             # Hero, Collections, Testimonials, FAQ
-│   ├── catalog/          # ProductCard, Grid, Filters
-│   ├── product/          # Gallery, Info, Schema
-│   └── ui/               # Button, Badge, Accordion
-├── lib/                  # constants, supabase, rate-limit
-└── styles/globals.css
-```
-
----
-
-## 🛠️ Cómo Empezar
+### 2. Variables de entorno
 
 ```bash
-# Clonar
-git clone https://github.com/tu-usuario/333-joyas-page.git
-
-# Instalar
-npm install
-
-# Variables de entorno
-cp .env.local.example .env.local
-
-# Desarrollo
-npm run dev
-
-# Build producción
-npm run build
+cp .env.local.example .env.local   # y pega ahí la URL y la clave anon
 ```
+
+En **Vercel → Settings → Environment Variables** agrega las mismas tres variables y vuelve a desplegar.
+
+> La clave `anon` es pública por diseño. La seguridad la dan las reglas RLS de la base. **Nunca** pongas la clave `service_role` en el proyecto.
+
+### 3. Correr el sitio
+
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # build de producción
+```
+
+### 4. Subir joyas
+
+Entra a **`/admin`** desde el teléfono con el usuario del paso 1.3 → **Nueva joya** → fotos, nombre, tejido, peso → **Crear joya**. El sitio se actualiza al instante.
 
 ---
 
-
+<div align="center">
+<sub>Hecho con 🤍 · <em>God First</em></sub>
+</div>
