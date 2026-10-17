@@ -1,46 +1,23 @@
-import { MetadataRoute } from "next";
-import { SITE_URL, MOCK_PRODUCTS } from "@/lib/constants";
+import type { MetadataRoute } from 'next';
+import { obtenerJoyas } from '@/lib/catalogo';
+import { MARCA } from '@/lib/marca';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages = [
-    {
-      url: SITE_URL,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 1,
-    },
-    {
-      url: `${SITE_URL}/catalogo`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/artesania`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/legal/privacidad`,
-      lastModified: new Date(),
-      changeFrequency: "yearly" as const,
-      priority: 0.5,
-    },
-    {
-      url: `${SITE_URL}/legal/terminos`,
-      lastModified: new Date(),
-      changeFrequency: "yearly" as const,
-      priority: 0.5,
-    },
-  ];
+export const revalidate = 3600;
 
-  const productPages = MOCK_PRODUCTS.map((product) => ({
-    url: `${SITE_URL}/catalogo/${product.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const joyas = await obtenerJoyas();
+  const fijas = ['', '/catalogo', '/nosotros', '/legal/privacidad', '/legal/terminos'].map((ruta) => ({
+    url: `${MARCA.url}${ruta}`,
+    changeFrequency: 'weekly' as const,
+    priority: ruta === '' ? 1 : 0.6,
   }));
-
-  return [...staticPages, ...productPages];
+  return [
+    ...fijas,
+    ...joyas.map((j) => ({
+      url: `${MARCA.url}/catalogo/${j.slug}`,
+      lastModified: new Date(j.creada_en),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    })),
+  ];
 }

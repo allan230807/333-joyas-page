@@ -2,147 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-primary: #0a0a14;
-  --color-secondary: #0f1528;
-  --color-accent: #d4af37;
-  --color-surface: #f8f6f3;
-  --color-muted: #6b7280;
-  --color-border: #e5e1dc;
-  --color-white: #ffffff;
-  --color-error: #b91c1c;
-  --font-playfair: 'Playfair Display', Georgia, serif;
-  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
 @layer base {
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    scroll-padding-top: 5rem;
   }
 
-  html {
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
-    @apply font-body text-primary bg-surface;
-    font-size: 1.125rem;
-    line-height: 1.7;
-  }
-
-  h1 {
-    @apply font-heading text-h1;
-  }
-
-  h2 {
-    @apply font-heading text-h2;
-  }
-
-  h3 {
-    @apply font-heading text-h3;
-  }
-
-  p {
-    @apply text-body;
-  }
-
-  small {
-    @apply text-small text-muted;
-  }
-
-  a {
-    @apply transition-colors duration-200;
-  }
-
-  img {
-    @apply max-w-full h-auto;
+    @apply bg-noche font-sans text-marfil antialiased lining-nums;
+    text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background-color: #c9a96e;
-    color: #ffffff;
+    background: #c9a45c;
+    color: #0b0b0c;
+  }
+
+  :focus-visible {
+    outline: 1px solid #ecd59f;
+    outline-offset: 3px;
   }
 }
 
 @layer components {
-  .section-padding {
-    @apply py-16 md:py-24;
+  .contenedor {
+    @apply mx-auto w-full max-w-contenedor px-5 sm:px-8;
   }
 
-  .page-padding {
-    @apply pt-8 pb-16 md:pt-12 md:pb-24;
+  .seccion {
+    @apply py-20 sm:py-28;
+  }
+
+  /* Rótulo pequeño en mayúsculas espaciadas sobre los títulos. */
+  .rotulo {
+    @apply text-[0.7rem] font-medium uppercase tracking-[0.32em] text-oro;
+  }
+
+  .titulo {
+    @apply font-serif text-[2.4rem] font-light leading-[1.05] tracking-tight text-marfil sm:text-6xl;
+  }
+
+  /* Texto con degradado de oro que recorre lentamente. */
+  .texto-oro {
+    background: linear-gradient(100deg, #8f7036 0%, #ecd59f 25%, #c9a45c 50%, #ecd59f 75%, #8f7036 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .boton {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 px-7 text-[0.78rem] font-semibold uppercase tracking-[0.2em] transition-[background-color,color,border-color,transform] duration-300 ease-suave active:scale-[0.98];
+  }
+
+  .boton-oro {
+    @apply boton bg-oro text-noche hover:bg-oro-claro;
+  }
+
+  .boton-linea {
+    @apply boton border border-oro/50 text-marfil hover:border-oro hover:text-oro-claro;
+  }
+
+  /* Campos de formulario del panel. 16px evita el zoom automático del iPhone. */
+  .campo {
+    @apply block min-h-[48px] w-full border border-linea bg-carbon px-4 text-base text-marfil placeholder:text-niebla/60 focus:border-oro focus:outline-none;
+  }
+
+  .chip {
+    @apply inline-flex min-h-[40px] shrink-0 items-center rounded-full border px-4 text-sm transition-colors duration-300;
+  }
+
+  .sin-barra::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sin-barra {
+    scrollbar-width: none;
+  }
+
+  /* Margen inferior seguro (iPhone con barra de inicio). */
+  .pb-seguro {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 }
 
-/* Weave animation for product cards */
-@keyframes weave {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(10px);
-  }
+/* Tejidos animados (components/tejidos/TejidoAnimado.tsx) */
+.tejido-trazo path {
+  vector-effect: non-scaling-stroke;
 }
 
-@keyframes weave-reverse {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(-10px);
-  }
+.tejido-deriva {
+  animation-name: tejido-deriva;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
+@keyframes tejido-deriva {
+  to {
+    transform: translateX(calc(-1 * var(--periodo)));
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
+@media (prefers-reduced-motion: reduce) {
+  .tejido-deriva,
+  .animate-brillo {
+    animation: none;
   }
 }
-
-@keyframes pulse-gold {
-  0%, 100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-.animate-weave {
-  animation: weave 3s ease-in-out infinite;
-}
-
-.animate-weave-reverse {
-  animation: weave-reverse 3s ease-in-out infinite;
-}
-
-.animate-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.3), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-pulse-gold {
-  animation: pulse-gold 2s ease-in-out infinite;
-}
-
