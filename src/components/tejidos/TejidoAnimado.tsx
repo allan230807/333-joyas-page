@@ -22,7 +22,11 @@ interface Props {
 // mantiene fluido en teléfonos; fuera de pantalla queda en pausa.
 export default function TejidoAnimado({ tejido, className, grosor = 1.15 }: Props) {
   const ref = useRef<SVGSVGElement>(null);
-  const visible = useInView(ref, { margin: '0px 0px -8% 0px' });
+  // `visto` queda en true para siempre: así el dibujo termina aunque el usuario
+  // haga scroll rápido y el tejido salga de pantalla a mitad de la animación.
+  // `visible` cambia con el scroll y solo pausa/reanuda la deriva.
+  const visto = useInView(ref, { once: true, margin: '0px 0px -8% 0px' });
+  const visible = useInView(ref);
   const reducir = useReducedMotion() ?? false;
   const id = useId().replace(/:/g, '');
   const { periodo, unidad, fijas } = DIBUJOS[tejido];
@@ -66,7 +70,7 @@ export default function TejidoAnimado({ tejido, className, grosor = 1.15 }: Prop
             y={0}
             height={ALTO}
             initial={{ width: reducir ? ANCHO : 0 }}
-            animate={visible || reducir ? { width: ANCHO } : undefined}
+            animate={visto || reducir ? { width: ANCHO } : undefined}
             transition={{ duration: 1.8, ease: [0.65, 0, 0.35, 1] }}
           />
         </clipPath>

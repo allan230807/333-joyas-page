@@ -4,7 +4,7 @@ export const MARCA = {
   nombre: '333 Joyas',
   lema: 'God First',
   descripcion:
-    'Joyería en oro 18k. Cadenas, pulseras y piezas pesadas frente a ti, con garantía de pureza y delivery en Caracas.',
+    'Joyería exclusivamente en oro 18k. Cadenas, pulseras y piezas con su peso en gramos, garantía de pureza y delivery en Caracas.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://333joyas.com',
 } as const;
 

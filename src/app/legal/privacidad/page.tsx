@@ -1,6 +1,5 @@
 import { Metadata } from "next";
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import Container from "@/components/ui/Container";
+import Migas from "@/components/disposicion/Migas";
 
 export const metadata: Metadata = {
   title: "Politica de Privacidad",
@@ -9,11 +8,11 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="py-page-padding">
-      <Container>
+    <div className="pb-24 pt-28 md:pt-36">
+      <div className="contenedor">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
-            <Breadcrumbs
+            <Migas
               items={[
                 { label: "Inicio", href: "/" },
                 { label: "Politica de Privacidad", href: "/legal/privacidad" },
@@ -21,7 +20,7 @@ export default function PrivacyPolicyPage() {
             />
           </div>
           
-          <h1 className="text-h2 font-heading text-primary mb-12">Politica de Privacidad</h1>
+          <h1 className="titulo mt-8 mb-12">Politica de Privacidad</h1>
           
           <div className="space-y-8 text-body text-muted">
             <section>
@@ -97,7 +96,7 @@ export default function PrivacyPolicyPage() {
             </section>
           </div>
         </div>
-      </Container>
+      </div>
     </div>
   );
 }

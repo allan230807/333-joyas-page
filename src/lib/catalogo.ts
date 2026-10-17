@@ -85,7 +85,7 @@ export const obtenerJoya = cache((slug: string) =>
 const NOSOTROS_POR_DEFECTO: Nosotros = {
   titulo: 'Joyería en oro 18k, hecha para durar',
   texto:
-    'Somos una joyería de San Antonio de los Altos, Miranda. Trabajamos únicamente con oro de 18 quilates: cada pieza se pesa frente a ti y se entrega con su garantía de pureza. Atención personal y delivery en Caracas.',
+    'Somos una joyería de San Antonio de los Altos, Miranda. Trabajamos únicamente con oro de 18 quilates y cada pieza incluye su garantía de pureza. Atención personal y delivery en Caracas.',
 };
 
 export const obtenerNosotros = cache(() =>

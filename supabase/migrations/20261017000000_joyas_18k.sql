@@ -119,7 +119,7 @@ create table if not exists public.nosotros (
 insert into public.nosotros (id, titulo, texto) values (
   1,
   'Joyería en oro 18k, hecha para durar',
-  'Somos una joyería de San Antonio de los Altos, Miranda. Trabajamos únicamente con oro de 18 quilates: cada pieza se pesa frente a ti y se entrega con su garantía de pureza. Atención personal y delivery en Caracas.'
+  'Somos una joyería de San Antonio de los Altos, Miranda. Trabajamos únicamente con oro de 18 quilates y cada pieza incluye su garantía de pureza. Atención personal y delivery en Caracas.'
 ) on conflict (id) do nothing;
 
 -- ---------------------------------------------------------------- RLS

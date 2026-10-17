@@ -1,46 +1,26 @@
-import { Metadata } from "next";
-import Hero from "@/components/home/Hero";
-import AboutSection from "@/components/home/AboutSection";
-import FeaturedCollections from "@/components/home/FeaturedCollections";
-import FAQ from "@/components/home/FAQ";
-import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
-import { createClient } from "@/lib/supabase/server";
-import { Product } from "@/types";
+import Destacadas from '@/components/inicio/Destacadas';
+import GaleriaTejidos from '@/components/inicio/GaleriaTejidos';
+import NosotrosBreve from '@/components/inicio/NosotrosBreve';
+import Portada from '@/components/inicio/Portada';
+import Preguntas from '@/components/inicio/Preguntas';
+import Sello18k from '@/components/inicio/Sello18k';
+import { elegirDestacadas, obtenerJoyas, obtenerNosotros } from '@/lib/catalogo';
 
-export const metadata: Metadata = {
-  title: `${SITE_NAME} | Oro de Inversión en Caracas`,
-  description: SITE_DESCRIPTION,
-};
+// La página se genera y se cachea; el panel la regenera al guardar cambios
+// (/api/revalidar) y, por si acaso, se renueva cada 10 minutos.
+export const revalidate = 600;
 
-export default async function HomePage() {
-  let randomProducts: Product[] = [];
-
-  try {
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      const supabase = await createClient();
-      const { data: products } = await supabase
-        .from("products")
-        .select(`
-          *,
-          category:categories(*),
-          images:product_images(*)
-        `);
-
-      // Shuffle and pick 3 products randomly
-      randomProducts = products
-        ? (products as Product[]).sort(() => 0.5 - Math.random()).slice(0, 3)
-        : [];
-    }
-  } catch {
-    // Supabase not configured yet — show empty state
-  }
+export default async function Inicio() {
+  const [joyas, nosotros] = await Promise.all([obtenerJoyas(), obtenerNosotros()]);
 
   return (
     <>
-      <Hero />
-      <AboutSection />
-      <FeaturedCollections products={randomProducts} />
-      <FAQ />
+      <Portada />
+      <Destacadas joyas={elegirDestacadas(joyas, 8)} />
+      <GaleriaTejidos />
+      <Sello18k />
+      <NosotrosBreve nosotros={nosotros} />
+      <Preguntas />
     </>
   );
 }

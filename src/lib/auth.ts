@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { SESSION_COOKIE } from './constants';
+const SESSION_COOKIE = 'joyas_session';
 import { sign } from './session';
 
 interface AdminUser {

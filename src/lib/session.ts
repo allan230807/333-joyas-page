@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { SESSION_COOKIE } from './constants';
+const SESSION_COOKIE = 'joyas_session';
 
 // Hardcoded secret for simplicity (works everywhere without env vars)
 const SECRET = '333joyas-secure-secret-2024';
