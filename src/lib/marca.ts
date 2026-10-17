@@ -13,8 +13,8 @@ export const QUILATES = 18;
 export const PUREZA_MILESIMAS = 750; // 18/24 = 75 % de oro puro
 
 export const CONTACTO = {
-  telefono: '0424-193-3606',
-  whatsapp: '584241933606',
+  telefono: '0424-193-4606',
+  whatsapp: '584241934606',
   instagram: '333joyas',
   direccion: 'San Antonio de los Altos, Miranda, Venezuela',
   horario: 'Lunes a sábado, 9:00 a 18:00',
