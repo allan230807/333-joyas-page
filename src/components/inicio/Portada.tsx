@@ -9,26 +9,6 @@ import { MARCA, QUILATES, enlaceWhatsApp } from '@/lib/marca';
 
 const SUAVE = [0.22, 1, 0.36, 1] as const;
 
-// Cada letra del lema sube desde una máscara, una tras otra.
-function LemaAnimado({ texto }: { texto: string }) {
-  return (
-    <span aria-label={texto} className="inline-block">
-      {texto.split('').map((letra, i) => (
-        <span key={i} aria-hidden="true" className="inline-block overflow-hidden pb-[0.12em] align-bottom">
-          <m.span
-            className="inline-block"
-            initial={{ y: '110%' }}
-            animate={{ y: 0 }}
-            transition={{ duration: 1.1, ease: SUAVE, delay: 0.25 + i * 0.055 }}
-          >
-            {letra === ' ' ? ' ' : letra}
-          </m.span>
-        </span>
-      ))}
-    </span>
-  );
-}
-
 export default function Portada() {
   const ref = useRef<HTMLElement>(null);
   const reducir = useReducedMotion();
@@ -47,7 +27,7 @@ export default function Portada() {
         style={{ background: 'radial-gradient(circle, rgba(201,164,92,0.16) 0%, rgba(11,11,12,0) 65%)' }}
       />
 
-      <m.div style={{ y, opacity: opacidad }} className="contenedor relative z-10 pt-24 text-center">
+      <m.div style={{ y, opacity: opacidad }} className="contenedor relative z-10 pb-36 pt-28 text-center">
         <h1>
           {/* Nombre de la marca: entra abriendo el espaciado de letras. */}
           <m.span
@@ -67,11 +47,18 @@ export default function Portada() {
             Oro {QUILATES}k
           </m.span>
 
-          {/* Lema en grande con destello de oro que lo recorre. */}
-          <span className="mt-5 block font-serif text-[clamp(4.8rem,26vw,12rem)] font-light italic leading-[0.9] tracking-tight">
-            <span className="oro-destello">
-              <LemaAnimado texto={MARCA.lema} />
-            </span>
+          {/* Lema en grande con destello de oro. El degradado va sobre un solo
+              elemento con texto directo: Safari (iPhone) no pinta
+              background-clip:text en letras separadas en elementos animados. */}
+          <span className="relative mt-5 block overflow-hidden pb-[0.14em] font-serif text-[clamp(4.8rem,26vw,12rem)] font-light italic leading-[0.95] tracking-tight">
+            <m.span
+              className="relative inline-block"
+              initial={{ y: '105%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1.4, ease: SUAVE, delay: 0.35 }}
+            >
+              <span className="oro-destello">{MARCA.lema}</span>
+            </m.span>
           </span>
         </h1>
 

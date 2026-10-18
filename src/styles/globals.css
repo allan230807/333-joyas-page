@@ -93,8 +93,9 @@
   }
 }
 
-/* Oro con destello: una franja de luz recorre el texto cada pocos segundos y
-   un resplandor dorado lo rodea. Solo anima background-position (barato). */
+/* Oro con destello: una franja de luz recorre el texto cada pocos segundos.
+   Solo anima background-position (barato). Aplicar sobre un elemento con el
+   texto directo, sin hijos: Safari no recorta el degradado a texto anidado. */
 .oro-destello {
   background-image: linear-gradient(
     105deg,
@@ -111,7 +112,6 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 22px rgba(201, 164, 92, 0.35));
   animation: oro-destello 4s cubic-bezier(0.45, 0, 0.25, 1) 1.6s infinite;
 }
 
